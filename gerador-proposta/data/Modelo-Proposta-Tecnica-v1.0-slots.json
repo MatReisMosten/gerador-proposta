@@ -1,0 +1,1259 @@
+{
+  "meta": {
+    "{S01_T00}": {
+      "role": "label",
+      "size": 10,
+      "slide": 1,
+      "slot": 0
+    },
+    "{S01_T01}": {
+      "role": "label",
+      "size": 10,
+      "slide": 1,
+      "slot": 1
+    },
+    "{S01_T02}": {
+      "role": "label",
+      "size": 10,
+      "slide": 1,
+      "slot": 2
+    },
+    "{S01_T03}": {
+      "role": "label",
+      "size": 10,
+      "slide": 1,
+      "slot": 3
+    },
+    "{S01_T04}": {
+      "role": "cover_title",
+      "size": 40,
+      "slide": 1,
+      "slot": 4
+    },
+    "{S02_T00}": {
+      "role": "subtitle",
+      "size": 16,
+      "slide": 2,
+      "slot": 0
+    },
+    "{S02_T01}": {
+      "role": "label",
+      "size": 10,
+      "slide": 2,
+      "slot": 1
+    },
+    "{S02_T02}": {
+      "role": "label",
+      "size": 10,
+      "slide": 2,
+      "slot": 2
+    },
+    "{S02_T03}": {
+      "role": "label",
+      "size": 10,
+      "slide": 2,
+      "slot": 3
+    },
+    "{S02_T04}": {
+      "role": "label",
+      "size": 10,
+      "slide": 2,
+      "slot": 4
+    },
+    "{S02_T05}": {
+      "role": "cover_title",
+      "size": 48,
+      "slide": 2,
+      "slot": 5
+    },
+    "{S03_T00}": {
+      "role": "title",
+      "size": 36,
+      "slide": 3,
+      "slot": 0
+    },
+    "{S03_T01}": {
+      "role": "body",
+      "size": 12,
+      "slide": 3,
+      "slot": 1
+    },
+    "{S03_T02}": {
+      "role": "subtitle",
+      "size": 14,
+      "slide": 3,
+      "slot": 2
+    },
+    "{S03_T03}": {
+      "role": "label",
+      "size": 9,
+      "slide": 3,
+      "slot": 3
+    },
+    "{S03_T04}": {
+      "role": "label",
+      "size": 9,
+      "slide": 3,
+      "slot": 4
+    },
+    "{S03_T05}": {
+      "role": "body",
+      "size": 9,
+      "slide": 3,
+      "slot": 5
+    },
+    "{S03_T06}": {
+      "role": "body",
+      "size": 9,
+      "slide": 3,
+      "slot": 6
+    },
+    "{S03_T07}": {
+      "role": "label",
+      "size": 13,
+      "slide": 3,
+      "slot": 7
+    },
+    "{S04_T00}": {
+      "role": "title",
+      "size": 32,
+      "slide": 4,
+      "slot": 0
+    },
+    "{S04_T01}": {
+      "role": "label",
+      "size": 9,
+      "slide": 4,
+      "slot": 1
+    },
+    "{S04_T02}": {
+      "role": "body",
+      "size": 10,
+      "slide": 4,
+      "slot": 2
+    },
+    "{S04_T03}": {
+      "role": "body",
+      "size": 10,
+      "slide": 4,
+      "slot": 3
+    },
+    "{S04_T04}": {
+      "role": "body",
+      "size": 10,
+      "slide": 4,
+      "slot": 4
+    },
+    "{S04_T05}": {
+      "role": "body",
+      "size": 10,
+      "slide": 4,
+      "slot": 5
+    },
+    "{S04_T06}": {
+      "role": "body",
+      "size": 10,
+      "slide": 4,
+      "slot": 6
+    },
+    "{S04_T07}": {
+      "role": "body",
+      "size": 10,
+      "slide": 4,
+      "slot": 7
+    },
+    "{S04_T08}": {
+      "role": "body",
+      "size": 10,
+      "slide": 4,
+      "slot": 8
+    },
+    "{S05_T00}": {
+      "role": "title",
+      "size": 32,
+      "slide": 5,
+      "slot": 0
+    },
+    "{S05_T01}": {
+      "role": "body",
+      "size": 12,
+      "slide": 5,
+      "slot": 1
+    },
+    "{S05_T02}": {
+      "role": "label",
+      "size": 13,
+      "slide": 5,
+      "slot": 2
+    },
+    "{S05_T03}": {
+      "role": "body",
+      "size": 12,
+      "slide": 5,
+      "slot": 3
+    },
+    "{S05_T04}": {
+      "role": "body",
+      "size": 12,
+      "slide": 5,
+      "slot": 4
+    },
+    "{S06_T00}": {
+      "role": "subtitle",
+      "size": 16,
+      "slide": 6,
+      "slot": 0
+    },
+    "{S06_T01}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 6,
+      "slot": 1
+    },
+    "{S06_T02}": {
+      "role": "label",
+      "size": 13,
+      "slide": 6,
+      "slot": 2
+    },
+    "{S06_T03}": {
+      "role": "title",
+      "size": 32,
+      "slide": 6,
+      "slot": 3
+    },
+    "{S07_T00}": {
+      "role": "label",
+      "size": 10,
+      "slide": 7,
+      "slot": 0
+    },
+    "{S07_T01}": {
+      "role": "body",
+      "size": 10,
+      "slide": 7,
+      "slot": 1
+    },
+    "{S07_T02}": {
+      "role": "label",
+      "size": 10,
+      "slide": 7,
+      "slot": 2
+    },
+    "{S07_T03}": {
+      "role": "body",
+      "size": 10,
+      "slide": 7,
+      "slot": 3
+    },
+    "{S07_T04}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 7,
+      "slot": 4
+    },
+    "{S07_T05}": {
+      "role": "body",
+      "size": 12,
+      "slide": 7,
+      "slot": 5
+    },
+    "{S07_T06}": {
+      "role": "title",
+      "size": 36,
+      "slide": 7,
+      "slot": 6
+    },
+    "{S07_T07}": {
+      "role": "label",
+      "size": 10,
+      "slide": 7,
+      "slot": 7
+    },
+    "{S07_T08}": {
+      "role": "label",
+      "size": 8,
+      "slide": 7,
+      "slot": 8
+    },
+    "{S07_T09}": {
+      "role": "label",
+      "size": 8,
+      "slide": 7,
+      "slot": 9
+    },
+    "{S07_T10}": {
+      "role": "label",
+      "size": 8,
+      "slide": 7,
+      "slot": 10
+    },
+    "{S07_T11}": {
+      "role": "body",
+      "size": 8,
+      "slide": 7,
+      "slot": 11
+    },
+    "{S07_T12}": {
+      "role": "body",
+      "size": 8,
+      "slide": 7,
+      "slot": 12
+    },
+    "{S07_T13}": {
+      "role": "keep",
+      "size": 64,
+      "slide": 7,
+      "slot": 13
+    },
+    "{S07_T14}": {
+      "role": "body",
+      "size": 10,
+      "slide": 7,
+      "slot": 14
+    },
+    "{S08_T00}": {
+      "role": "title",
+      "size": 34,
+      "slide": 8,
+      "slot": 0
+    },
+    "{S08_T01}": {
+      "role": "body",
+      "size": 12,
+      "slide": 8,
+      "slot": 1
+    },
+    "{S08_T02}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 8,
+      "slot": 2
+    },
+    "{S08_T03}": {
+      "role": "label",
+      "size": 12,
+      "slide": 8,
+      "slot": 3
+    },
+    "{S08_T04}": {
+      "role": "label",
+      "size": 12,
+      "slide": 8,
+      "slot": 4
+    },
+    "{S08_T05}": {
+      "role": "label",
+      "size": 12,
+      "slide": 8,
+      "slot": 5
+    },
+    "{S08_T06}": {
+      "role": "label",
+      "size": 13,
+      "slide": 8,
+      "slot": 6
+    },
+    "{S09_T00}": {
+      "role": "label",
+      "size": 13,
+      "slide": 9,
+      "slot": 0
+    },
+    "{S09_T01}": {
+      "role": "title",
+      "size": 32,
+      "slide": 9,
+      "slot": 1
+    },
+    "{S09_T02}": {
+      "role": "label",
+      "size": 12,
+      "slide": 9,
+      "slot": 2
+    },
+    "{S09_T03}": {
+      "role": "label",
+      "size": 13,
+      "slide": 9,
+      "slot": 3
+    },
+    "{S09_T04}": {
+      "role": "body",
+      "size": 12,
+      "slide": 9,
+      "slot": 4
+    },
+    "{S09_T05}": {
+      "role": "label",
+      "size": 12,
+      "slide": 9,
+      "slot": 5
+    },
+    "{S09_T06}": {
+      "role": "label",
+      "size": 12,
+      "slide": 9,
+      "slot": 6
+    },
+    "{S09_T07}": {
+      "role": "body",
+      "size": 12,
+      "slide": 9,
+      "slot": 7
+    },
+    "{S09_T08}": {
+      "role": "body",
+      "size": 12,
+      "slide": 9,
+      "slot": 8
+    },
+    "{S09_T09}": {
+      "role": "body",
+      "size": 12,
+      "slide": 9,
+      "slot": 9
+    },
+    "{S09_T10}": {
+      "role": "body",
+      "size": 12,
+      "slide": 9,
+      "slot": 10
+    },
+    "{S09_T11}": {
+      "role": "body",
+      "size": 12,
+      "slide": 9,
+      "slot": 11
+    },
+    "{S09_T12}": {
+      "role": "body",
+      "size": 12,
+      "slide": 9,
+      "slot": 12
+    },
+    "{S09_T13}": {
+      "role": "body",
+      "size": 12,
+      "slide": 9,
+      "slot": 13
+    },
+    "{S10_T00}": {
+      "role": "body",
+      "size": 12,
+      "slide": 10,
+      "slot": 0
+    },
+    "{S10_T01}": {
+      "role": "body",
+      "size": 10,
+      "slide": 10,
+      "slot": 1
+    },
+    "{S10_T02}": {
+      "role": "body",
+      "size": 10,
+      "slide": 10,
+      "slot": 2
+    },
+    "{S10_T03}": {
+      "role": "title",
+      "size": 36,
+      "slide": 10,
+      "slot": 3
+    },
+    "{S10_T04}": {
+      "role": "body",
+      "size": 10,
+      "slide": 10,
+      "slot": 4
+    },
+    "{S10_T05}": {
+      "role": "body",
+      "size": 10,
+      "slide": 10,
+      "slot": 5
+    },
+    "{S11_T00}": {
+      "role": "title",
+      "size": 32,
+      "slide": 11,
+      "slot": 0
+    },
+    "{S11_T01}": {
+      "role": "body",
+      "size": 12,
+      "slide": 11,
+      "slot": 1
+    },
+    "{S11_T02}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 11,
+      "slot": 2
+    },
+    "{S11_T03}": {
+      "role": "subtitle",
+      "size": 14,
+      "slide": 11,
+      "slot": 3
+    },
+    "{S11_T04}": {
+      "role": "subtitle",
+      "size": 14,
+      "slide": 11,
+      "slot": 4
+    },
+    "{S11_T05}": {
+      "role": "subtitle",
+      "size": 14,
+      "slide": 11,
+      "slot": 5
+    },
+    "{S11_T06}": {
+      "role": "body",
+      "size": 12,
+      "slide": 11,
+      "slot": 6
+    },
+    "{S12_T00}": {
+      "role": "title",
+      "size": 32,
+      "slide": 12,
+      "slot": 0
+    },
+    "{S12_T01}": {
+      "role": "body",
+      "size": 12,
+      "slide": 12,
+      "slot": 1
+    },
+    "{S12_T02}": {
+      "role": "body",
+      "size": 12,
+      "slide": 12,
+      "slot": 2
+    },
+    "{S12_T03}": {
+      "role": "body",
+      "size": 12,
+      "slide": 12,
+      "slot": 3
+    },
+    "{S12_T04}": {
+      "role": "body",
+      "size": 12,
+      "slide": 12,
+      "slot": 4
+    },
+    "{S12_T05}": {
+      "role": "body",
+      "size": 12,
+      "slide": 12,
+      "slot": 5
+    },
+    "{S13_T00}": {
+      "role": "title",
+      "size": 32,
+      "slide": 13,
+      "slot": 0
+    },
+    "{S13_T01}": {
+      "role": "body",
+      "size": 10,
+      "slide": 13,
+      "slot": 1
+    },
+    "{S13_T02}": {
+      "role": "body",
+      "size": 10,
+      "slide": 13,
+      "slot": 2
+    },
+    "{S13_T03}": {
+      "role": "body",
+      "size": 10,
+      "slide": 13,
+      "slot": 3
+    },
+    "{S13_T04}": {
+      "role": "body",
+      "size": 10,
+      "slide": 13,
+      "slot": 4
+    },
+    "{S13_T05}": {
+      "role": "body",
+      "size": 10,
+      "slide": 13,
+      "slot": 5
+    },
+    "{S13_T06}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 13,
+      "slot": 6
+    },
+    "{S13_T07}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 13,
+      "slot": 7
+    },
+    "{S13_T08}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 13,
+      "slot": 8
+    },
+    "{S13_T09}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 13,
+      "slot": 9
+    },
+    "{S13_T10}": {
+      "role": "label",
+      "size": 9,
+      "slide": 13,
+      "slot": 10
+    },
+    "{S13_T11}": {
+      "role": "body",
+      "size": 10,
+      "slide": 13,
+      "slot": 11
+    },
+    "{S13_T12}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 13,
+      "slot": 12
+    },
+    "{S13_T13}": {
+      "role": "display",
+      "size": 76,
+      "slide": 13,
+      "slot": 13
+    },
+    "{S13_T14}": {
+      "role": "body",
+      "size": 21,
+      "slide": 13,
+      "slot": 14
+    },
+    "{S13_T15}": {
+      "role": "label",
+      "size": 10,
+      "slide": 13,
+      "slot": 15
+    },
+    "{S13_T16}": {
+      "role": "body",
+      "size": 10,
+      "slide": 13,
+      "slot": 16
+    },
+    "{S14_T00}": {
+      "role": "title",
+      "size": 32,
+      "slide": 14,
+      "slot": 0
+    },
+    "{S14_T01}": {
+      "role": "body",
+      "size": 10,
+      "slide": 14,
+      "slot": 1
+    },
+    "{S14_T02}": {
+      "role": "body",
+      "size": 12,
+      "slide": 14,
+      "slot": 2
+    },
+    "{S14_T03}": {
+      "role": "body",
+      "size": 12,
+      "slide": 14,
+      "slot": 3
+    },
+    "{S14_T04}": {
+      "role": "body",
+      "size": 12,
+      "slide": 14,
+      "slot": 4
+    },
+    "{S14_T05}": {
+      "role": "body",
+      "size": 12,
+      "slide": 14,
+      "slot": 5
+    },
+    "{S14_T06}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 14,
+      "slot": 6
+    },
+    "{S14_T07}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 14,
+      "slot": 7
+    },
+    "{S14_T08}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 14,
+      "slot": 8
+    },
+    "{S14_T09}": {
+      "role": "keep",
+      "size": 9,
+      "slide": 14,
+      "slot": 9
+    },
+    "{S14_T10}": {
+      "role": "body",
+      "size": 9,
+      "slide": 14,
+      "slot": 10
+    },
+    "{S14_T11}": {
+      "role": "body",
+      "size": 9,
+      "slide": 14,
+      "slot": 11
+    },
+    "{S14_T12}": {
+      "role": "label",
+      "size": 9,
+      "slide": 14,
+      "slot": 12
+    },
+    "{S14_T13}": {
+      "role": "label",
+      "size": 10,
+      "slide": 14,
+      "slot": 13
+    },
+    "{S14_T14}": {
+      "role": "display",
+      "size": 64,
+      "slide": 14,
+      "slot": 14
+    },
+    "{S14_T15}": {
+      "role": "body",
+      "size": 21,
+      "slide": 14,
+      "slot": 15
+    },
+    "{S14_T16}": {
+      "role": "body",
+      "size": 10,
+      "slide": 14,
+      "slot": 16
+    },
+    "{S15_T00}": {
+      "role": "title",
+      "size": 36,
+      "slide": 15,
+      "slot": 0
+    },
+    "{S15_T01}": {
+      "role": "body",
+      "size": 12,
+      "slide": 15,
+      "slot": 1
+    },
+    "{S15_T02}": {
+      "role": "label",
+      "size": 10,
+      "slide": 15,
+      "slot": 2
+    },
+    "{S15_T03}": {
+      "role": "body",
+      "size": 10,
+      "slide": 15,
+      "slot": 3
+    },
+    "{S15_T04}": {
+      "role": "body",
+      "size": 10,
+      "slide": 15,
+      "slot": 4
+    },
+    "{S16_T00}": {
+      "role": "body",
+      "size": 12,
+      "slide": 16,
+      "slot": 0
+    },
+    "{S16_T01}": {
+      "role": "label",
+      "size": 14,
+      "slide": 16,
+      "slot": 1
+    },
+    "{S16_T02}": {
+      "role": "label",
+      "size": 14,
+      "slide": 16,
+      "slot": 2
+    },
+    "{S16_T03}": {
+      "role": "body",
+      "size": 12,
+      "slide": 16,
+      "slot": 3
+    },
+    "{S16_T04}": {
+      "role": "body",
+      "size": 12,
+      "slide": 16,
+      "slot": 4
+    },
+    "{S16_T05}": {
+      "role": "title",
+      "size": 32,
+      "slide": 16,
+      "slot": 5
+    },
+    "{S17_T00}": {
+      "role": "title",
+      "size": 29,
+      "slide": 17,
+      "slot": 0
+    },
+    "{S17_T01}": {
+      "role": "title",
+      "size": 29,
+      "slide": 17,
+      "slot": 1
+    },
+    "{S17_T02}": {
+      "role": "title",
+      "size": 29,
+      "slide": 17,
+      "slot": 2
+    },
+    "{S17_T03}": {
+      "role": "keep",
+      "size": 13,
+      "slide": 17,
+      "slot": 3
+    },
+    "{S17_T04}": {
+      "role": "keep",
+      "size": 13,
+      "slide": 17,
+      "slot": 4
+    },
+    "{S17_T05}": {
+      "role": "keep",
+      "size": 13,
+      "slide": 17,
+      "slot": 5
+    },
+    "{S17_T06}": {
+      "role": "body",
+      "size": 26,
+      "slide": 17,
+      "slot": 6
+    },
+    "{S17_T07}": {
+      "role": "body",
+      "size": 26,
+      "slide": 17,
+      "slot": 7
+    },
+    "{S17_T08}": {
+      "role": "body",
+      "size": 26,
+      "slide": 17,
+      "slot": 8
+    },
+    "{S17_T09}": {
+      "role": "label",
+      "size": 13,
+      "slide": 17,
+      "slot": 9
+    },
+    "{S17_T10}": {
+      "role": "label",
+      "size": 13,
+      "slide": 17,
+      "slot": 10
+    },
+    "{S17_T11}": {
+      "role": "label",
+      "size": 13,
+      "slide": 17,
+      "slot": 11
+    },
+    "{S17_T12}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 17,
+      "slot": 12
+    },
+    "{S17_T13}": {
+      "role": "title",
+      "size": 36,
+      "slide": 17,
+      "slot": 13
+    },
+    "{S17_T14}": {
+      "role": "label",
+      "size": 10,
+      "slide": 17,
+      "slot": 14
+    },
+    "{S17_T15}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 17,
+      "slot": 15
+    },
+    "{S17_T16}": {
+      "role": "body",
+      "size": 10,
+      "slide": 17,
+      "slot": 16
+    },
+    "{S17_T17}": {
+      "role": "body",
+      "size": 10,
+      "slide": 17,
+      "slot": 17
+    },
+    "{S18_T00}": {
+      "role": "label",
+      "size": 14,
+      "slide": 18,
+      "slot": 0
+    },
+    "{S18_T01}": {
+      "role": "body",
+      "size": 10,
+      "slide": 18,
+      "slot": 1
+    },
+    "{S18_T02}": {
+      "role": "label",
+      "size": 14,
+      "slide": 18,
+      "slot": 2
+    },
+    "{S18_T03}": {
+      "role": "body",
+      "size": 10,
+      "slide": 18,
+      "slot": 3
+    },
+    "{S18_T04}": {
+      "role": "label",
+      "size": 14,
+      "slide": 18,
+      "slot": 4
+    },
+    "{S18_T05}": {
+      "role": "body",
+      "size": 10,
+      "slide": 18,
+      "slot": 5
+    },
+    "{S18_T06}": {
+      "role": "label",
+      "size": 14,
+      "slide": 18,
+      "slot": 6
+    },
+    "{S18_T07}": {
+      "role": "body",
+      "size": 10,
+      "slide": 18,
+      "slot": 7
+    },
+    "{S18_T08}": {
+      "role": "label",
+      "size": 14,
+      "slide": 18,
+      "slot": 8
+    },
+    "{S18_T09}": {
+      "role": "body",
+      "size": 10,
+      "slide": 18,
+      "slot": 9
+    },
+    "{S18_T10}": {
+      "role": "label",
+      "size": 14,
+      "slide": 18,
+      "slot": 10
+    },
+    "{S18_T11}": {
+      "role": "body",
+      "size": 10,
+      "slide": 18,
+      "slot": 11
+    },
+    "{S18_T12}": {
+      "role": "title",
+      "size": 42,
+      "slide": 18,
+      "slot": 12
+    },
+    "{S18_T13}": {
+      "role": "label",
+      "size": 14,
+      "slide": 18,
+      "slot": 13
+    },
+    "{S18_T14}": {
+      "role": "body",
+      "size": 10,
+      "slide": 18,
+      "slot": 14
+    },
+    "{S19_T00}": {
+      "role": "cover_title",
+      "size": 48,
+      "slide": 19,
+      "slot": 0
+    },
+    "{S19_T01}": {
+      "role": "subtitle",
+      "size": 16,
+      "slide": 19,
+      "slot": 1
+    },
+    "{S19_T02}": {
+      "role": "body",
+      "size": 21,
+      "slide": 19,
+      "slot": 2
+    },
+    "{S19_T03}": {
+      "role": "label",
+      "size": 13,
+      "slide": 19,
+      "slot": 3
+    },
+    "{S19_T04}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 19,
+      "slot": 4
+    },
+    "{S19_T05}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 19,
+      "slot": 5
+    },
+    "{S20_T00}": {
+      "role": "cover_title",
+      "size": 40,
+      "slide": 20,
+      "slot": 0
+    },
+    "{S20_T01}": {
+      "role": "subtitle",
+      "size": 18,
+      "slide": 20,
+      "slot": 1
+    },
+    "{S20_T02}": {
+      "role": "subtitle",
+      "size": 13,
+      "slide": 20,
+      "slot": 2
+    }
+  },
+  "originals": {
+    "{S01_T00}": "ID da Proposta NET001-26",
+    "{S01_T01}": "Versão 1.0",
+    "{S01_T02}": "Data \n27/07/2026",
+    "{S01_T03}": "Validade: 15 dias",
+    "{S01_T04}": "A Plataforma \nque Conecta \ntoda a Operação\n\nSolução integrada para uma gestão \nmais eficiente, previsível e inteligente.\n\nProposta Técnica e Comercial\n\n",
+    "{S02_T00}": "Aplicativo Meu RH\u000b\u000bAcesso fácil e seguro às informações dos benefícios corporativos, de qualquer lugar e a qualquer hora.\n\n",
+    "{S02_T01}": "ID da Proposta BRK021-26",
+    "{S02_T02}": "Versão 1.0",
+    "{S02_T03}": "Data 15/06/2026",
+    "{S02_T04}": "Validade: 5 dias",
+    "{S02_T05}": "Informação que conecta pessoas \ne simplifica o RH.",
+    "{S03_T00}": "Como a operação\nfunciona hoje",
+    "{S03_T01}": "A Netafim está em um momento de expansão e transformação, implantando um novo WMS e buscando integrar toda a cadeia logística para ganhar visibilidade de ponta a ponta.\n\nAtualmente, os processos são fragmentados e dependem de planilhas, controles manuais e sistemas desconectados, o que limita a visibilidade em tempo real, aumenta retrabalhos e reduz a capacidade de tomada de decisão estratégica.\n\nNossa plataforma centraliza os principais processos logísticos em uma única camada de gestão, conectando armazém, transporte, parceiros e indicadores para uma visão completa da operação, sem substituir os sistemas que a Netafim já utiliza.",
+    "{S03_T02}": "Uma operação em evolução, que busca maior integração \ne previsibilidade para suportar sua expansão.",
+    "{S03_T03}": "Ausência de visão integrada",
+    "{S03_T04}": "Controles descentralizados",
+    "{S03_T05}": "Dependência de planilhas e processos manuais",
+    "{S03_T06}": "Atrasos e baixa previsibilidade nas entregas",
+    "{S03_T07}": "O DESAFIO",
+    "{S04_T00}": "Quando a informação não acompanha \no colaborador.",
+    "{S04_T01}": "O DESAFIO",
+    "{S04_T02}": "Informação dispersa\n\nBenefícios espalhados em múltiplos canais.\n",
+    "{S04_T03}": "Dependência do RH\n\nAlto volume de dúvidas recorrentes.\n",
+    "{S04_T04}": "Acesso restrito\n\nConsulta limitada fora da rede corporativa.\n",
+    "{S04_T05}": "Baixa autonomia\n\nInformações simples exigem atendimento.\n",
+    "{S04_T06}": "Benefícios, orientações e solicitações estão distribuídos entre diferentes canais.",
+    "{S04_T07}": "Sem um ponto único de acesso, colaboradores dependem do RH para esclarecer dúvidas simples e localizar informações que deveriam estar disponíveis em segundos.",
+    "{S04_T08}": "O resultado é mais atendimento manual, mais retrabalho e menos autonomia.",
+    "{S05_T00}": "A Mota-Engil Evolui.\nSua presença Digital \ntambém deve evoluir.",
+    "{S05_T01}": "O website corporativo deve refletir o novo momento da Mota-Engil Brasil, fortalecendo a marca, comunicando seus projetos estratégicos e conectando clientes, investidores, parceiros, talentos e a sociedade por meio de uma experiência digital moderna, segura e alinhada aos padrões globais do Grupo.",
+    "{S05_T02}": "O DESAFIO",
+    "{S05_T03}": "Uma empresa que lidera grandes projetos precisa de uma presença digital à altura de sua relevância. É essa evolução que a Mosten propõe entregar.",
+    "{S05_T04}": "A expansão da atuação da empresa no Brasil, impulsionada por grandes obras de infraestrutura, mobilidade, óleo & gás e concessões estratégicas, exige uma plataforma digital capaz de acompanhar esse crescimento com agilidade, governança e alta disponibilidade.\n\nMais do que um site institucional, o novo portal deve funcionar como um canal estratégico de comunicação, preparado para evoluir continuamente, incorporando novos projetos, conteúdos, indicadores, iniciativas ESG, oportunidades de carreira e informações relevantes para diferentes públicos.",
+    "{S06_T00}": "Canal Oficial de Informação Durante a Implantação",
+    "{S06_T01}": "A Mota-Engil vive um novo ciclo de expansão, com obras estratégicas em infraestrutura, mobilidade, óleo & gás, mineração e industrial.\n\nPor isso, a comunicação precisa evoluir na mesma velocidade.\n\nA                      propõe uma plataforma dinâmica e preparada para crescer junto com a empresa, incorporando conteúdos, funcionalidades e informações conforma novos projetos e marcos são alcançados.\n",
+    "{S06_T02}": "NOSSA SOLUÇÃO",
+    "{S06_T03}": "Portal que Acompanha o Crescimento do seu Projeto ",
+    "{S07_T00}": "Rentabilidade por veículo e viagem",
+    "{S07_T01}": "Redução da dependência de controles manuais",
+    "{S07_T02}": "Controle sobre custos operacionais",
+    "{S07_T03}": "Preparação para o crescimento sustentável",
+    "{S07_T04}": "O objetivo não é substituir planilhas ou sistemas isolados. \n\nÉ permitir que a transportadora possua,",
+    "{S07_T05}": "O desafio é transformar dados dispersos em uma visão unica orientada por indicadores, permitindo crescer sem perder o controle da operação. ",
+    "{S07_T06}": "A evolução necessária para\nUma operação mais previsivel",
+    "{S07_T07}": "Principais desafios",
+    "{S07_T08}": "Falta de visão consolidada",
+    "{S07_T09}": "Informações distribuidas",
+    "{S07_T10}": "Consolidação manual",
+    "{S07_T11}": "Baixa capacidade de análise para tomada de decisão",
+    "{S07_T12}": "Dificuldade em acompanhar a evolução da operação",
+    "{S07_T13}": "“",
+    "{S07_T14}": "Nosso objetivo é garantir uma visão única e completa da operação, conectando dados operacionais e financeiros.",
+    "{S08_T00}": "\nPlataforma de Gestão da\nOperação e rentabilidade da Netafim",
+    "{S08_T01}": "Uma plataforma única que conecta pátio, docas e expedição, eliminando controles dispersos e acompanhando custos, desempenho, rentabilidade e a evolução da operação.",
+    "{S08_T02}": "Solução criada para dar controle, previsibilidade e \nrentabilidade à operação logística da Netafim.",
+    "{S08_T03}": "Plataforma \nÚnica",
+    "{S08_T04}": "Adaptada \nà sua realidade",
+    "{S08_T05}": "Preparada \npara crescimento",
+    "{S08_T06}": "NOSSA SOLUÇÃO",
+    "{S09_T00}": "NOSSA SOLUÇÃO",
+    "{S09_T01}": "{TITULO_SOLUCAO}\n",
+    "{S09_T02}": "{DESC_SOLUCAO}",
+    "{S09_T03}": "{}",
+    "{S09_T04}": "Diagnótico Operacional e Técnico\nMapeamento do fluxo de acesso e análise da infraestrutura existente, sistemas envolvidos, tecnologias de identificação, interfaces e integrações disponíveis.\n",
+    "{S09_T05}": "ENTREGÁVEIS",
+    "{S09_T06}": "COMO VAMOS EXECUTAR",
+    "{S09_T07}": "Imersão Operacional\n\nEntendimento profundo da operação atual, processos, fluxos, sistemas e pontos de atenção.\n",
+    "{S09_T08}": "Workshop\nTécnico\n\nAlinhamento técnico com stakeholders para detalhar requisitos, regras de negócio e integrações\n",
+    "{S09_T09}": "Levantamento \ne Análises\n\nColeta e análise de dados para validar infraestrutura, integrações, fluxos e requisitos da solução.\n",
+    "{S09_T10}": "Consolidação\nExecutiva\n\nConsolidação das descobertas, riscos e recomendações com direcionamento claro para as próximas fases.\n",
+    "{S09_T11}": "Arquitetura Conceitual\nDefinição preliminar da arquitetura da solução, posicionamento dos dispositivos e estratégia de integração.",
+    "{S09_T12}": "Matriz de Riscos\nConsolidação das restrições operacionais, dependências, riscos técnicos e pontos que serão validados na POC.",
+    "{S09_T13}": "Relatório Estruturado\nDocumento consolidado contendo visão da solução e direcionamento para a próxima etapa.",
+    "{S10_T00}": "Um ambiente digital que conecta informações operacionais, permite simular \ncenários e antecipa impactos para uma tomada de decisão mais assertiva.",
+    "{S10_T01}": "Visão Financeira\n\nConecte receitas e despesas para acompanhar o resultado real da operação em tempo real",
+    "{S10_T02}": "Controle Operacional\n\nAcompanhe status, movimentos e atividades para garantir fluidez e eficiência em todas as etapas.",
+    "{S10_T03}": "Uma Plataforma para\nControlar, Analisar e Evoluir",
+    "{S10_T04}": "Indicadores Gerenciais\n\nTransforme dados operacionais em indicadores para apoiar decisões.",
+    "{S10_T05}": "Alertas e Ocorrências\n\nMonitore eventos críticos e incidentes para agir rápido e reduzir impactos na operação.",
+    "{S11_T00}": "Integrações Inteligentes\n",
+    "{S11_T01}": "Nossa Torre de Controle foi concebida para integrar, consolidar e enriquecer informações provenientes dos sistemas já utilizados pela Netafim, permitindo uma implantação gradual conforme a maturidade tecnológica da operação.",
+    "{S11_T02}": "Conectando seu ecossistema logístico sem substituir os sistemas existentes.",
+    "{S11_T03}": "APIs REST/\nWebServices\n\nIntegração em tempo real com SAP, WMS, TMS e demais plataformas corporativas através de APIs e serviços web.\n\n       Comunicação online\n       Atualização imediata \n       Escalabilidade\n",
+    "{S11_T04}": "Importação\nExcel/CSV\n\nPermite iniciar a operação rapidamente através da importação automatizada de planilhas e arquivos estruturados.\n\n      Baixo esforço\n      Implantação rápida\n      Ideal para fase inicial\n",
+    "{S11_T05}": "Automação\nRPA\n\nCaptura automática de informações diretamente dos sistemas existentes quando não houver APIs disponíveis.\n\n     Sem alterações no sistema atual\n      Automação de processos\n      Evolução gradual\n",
+    "{S11_T06}": "A arquitetura da solução permite iniciar rapidamente utilizando arquivos estruturados e evoluir para integrações em tempo real, reduzindo riscos de implantação e preservando os investimentos já realizados pela Netafim.",
+    "{S12_T00}": "O que a Netafim \nganha com a nossa \nTorre de Controle Logística\nVisão total. Decisões melhores.\n",
+    "{S12_T01}": "A Torre de Controle Logística da Netafim centraliza e conecta toda a operação logística dos Centros de Distribuição em uma única plataforma, trazendo visibilidade em tempo real, padronização de processos e controle completo do fluxo logístico.",
+    "{S12_T02}": "Planejamento de Agendamento\n\nGestão de janelas de agendamento de veículos e docas, com aprovação, conflitos e ocupação em tempo real.",
+    "{S12_T03}": "Operação do CD\n\nAcompanhamento dos pedidos desde e separação até a expedição com status e produtividade.",
+    "{S12_T04}": "Ocorrências e Alertas\n\nRegistro, categorização e tratamento das ocorrências e incidentes com rastreabilidade e SLA.",
+    "{S12_T05}": "Visibilidade da Operação\n\nAcompanhamento ponta a ponta da operação do pátio, docas e expedição em tempo real.",
+    "{S13_T00}": "Da validação \nà experiência digital.\n",
+    "{S13_T01}": "Antes da construção completa da solução, realizamos uma\nsolução para validar a experiência proposta e garantir aderência às expectativas da BRK.\n\nApós a aprovação, evoluímos para a plataforma definitiva, conectando colaboradores, benefícios, conteúdo e RH em uma única jornada digital.\n",
+    "{S13_T02}": "Discovery & Alinhamento\n\nMapeamento funcional da solução\nDefinição das integrações ADP, SSO, E-mail Corporativo e Assistente de IA\nFormalização dos requisitos\nPlanejamento do UAT.\n",
+    "{S13_T03}": "           Desenvolvimento\n\nBackend e APIs\nPortal RH Administrativo\nAplicação PWA (App Colaborador)\nAssistente de IA\nSincronização ADP\nAzure + Pipeline CI/CD.",
+    "{S13_T04}": "              Homologação + Pentest\n\nUAT com equipe BRK\nTestes funcionais\nValidação das integrações\nTestes do assistente de IA\nValidação dos fluxos de atendiemento.\nPentest e validação de segurança.\n",
+    "{S13_T05}": "               GO LIVE\n\nPublicação em produção\nTreinamento dos administradores\nDocumentação operacional\nOperação Assistida.",
+    "{S13_T06}": "1",
+    "{S13_T07}": "2",
+    "{S13_T08}": "3",
+    "{S13_T09}": "4",
+    "{S13_T10}": "CRONOGRAMA DE EXECUÇÃO",
+    "{S13_T11}": "Suporte Assistido\n\nMonitoramento pós-implantação\nCorreções e estabilização\nAcompanhamento da adoção ",
+    "{S13_T12}": "4",
+    "{S13_T13}": "6\t\n\n",
+    "{S13_T14}": "SEMANAS\n\n",
+    "{S13_T15}": "DA PROPOSTA À OPERAÇÃO\n\n",
+    "{S13_T16}": "Validação, construção e implantação da plataforma em uma jornada estruturada e com baixo risco para a BRK.",
+    "{S14_T00}": "Da implantação à\noperação contínua.\n",
+    "{S14_T01}": "Omnikeeper é implantado de forma estruturada para conectar dispositivos, regras de acesso e fluxos operacionais.\n\nApós o setup inicial, a plataforma passa a operar continuamente com suporte, monitoramento e evolução controlada.\n\n",
+    "{S14_T02}": "Setup da \nPlataforma\n\n﻿﻿Parametrização inicial\n﻿﻿Estrutura organizacional\n﻿﻿Perfis e permissões\n﻿﻿Regras de acesso\n",
+    "{S14_T03}": "Integração\nOperacional\n\nHenry Argos\n﻿﻿APIs\n﻿﻿Cloud Omnikeeper\n﻿﻿Fluxos de refeitório",
+    "{S14_T04}": "Entrada em Operação\n\n﻿﻿Validação assistida\n﻿﻿Go-live controlado\n﻿﻿Acompanhamento inicial\n",
+    "{S14_T05}": "Suporte &\nManutenção\n\nMonitoramento\n﻿﻿Suporte\n﻿﻿Ajustes operacionais",
+    "{S14_T06}": "1",
+    "{S14_T07}": "2",
+    "{S14_T08}": "3",
+    "{S14_T09}": "4",
+    "{S14_T10}": "Modelo de Implantação\n\nSetup assistido e parametrização da operação.",
+    "{S14_T11}": "Operação Contínua\n\nMonitoramento, suporte e evolução da plataforma.",
+    "{S14_T12}": "COMO TRABALHAMOS",
+    "{S14_T13}": "DA PROPOSTA À IMPLANTAÇÃO\n\n",
+    "{S14_T14}": "30\t\n\n",
+    "{S14_T15}": "DIAS\nCORRIDOS\n\n",
+    "{S14_T16}": "Implantação rápida, estruturada \ne com acompanhamento especializado.",
+    "{S15_T00}": "Como colocaremos \na plataforma em operação\n",
+    "{S15_T01}": "Uma implantação estruturada, com entregas progressivas, garantindo aderência à realidade da Transbastos e permitindo que comece a operar rapidamente.",
+    "{S15_T02}": "DA PROPOSTA À OPERAÇÃO\n\n",
+    "{S15_T03}": "LIBERAÇÃO DO SOFTWARE\nEm 7 dias após a reunião de mapeamento.\n\n",
+    "{S15_T04}": "ATÉ  4 SEMANAS\n\nPara parametrização, treinamentos e acompanhamento.\n",
+    "{S16_T00}": "Para o sucesso do projeto consideramos as seguintes premissas e restrições",
+    "{S16_T01}": "PREMISSAS\n\n",
+    "{S16_T02}": "RESTRIÇÕES\n\n",
+    "{S16_T03}": "Implantação conforme o escopo definido nesta proposta\n\nDisponibilização, pela Netafim, das informações, acessos e responsáveis necessários ao projeto.\n\nIntegrações via API condicionadas à disponibilização das especificações técnicas dos sistemas envolvidos.\n\nNa ausência de APIs, poderão ser utilizados arquivos estruturados (Excel/CSV) e/ou automações via RPA.\n\nParticipação dos usuários-chave nas etapas de validação e homologação.\n",
+    "{S16_T04}": "A solução complementa os sistemas existentes, não contemplando sua substituição.\n\nDesenvolvimentos em sistemas legados (SAP, WMS, TMS etc.) não fazem parte do escopo.\n\nAlterações de escopo após a aprovação da solução serão tratadas como evolução.\n\nOs prazos de implantação dependem da disponibilidade de informações, acessos e validações pala Netafim e terceiros.\n\nA qualidade das informações apresentadas dependerá dos dados fornecidos pelos sistemas integrados.\n",
+    "{S16_T05}": "O que vamos precisar?",
+    "{S17_T00}": "12\nMESES",
+    "{S17_T01}": "24\nMESES",
+    "{S17_T02}": "36\nMESES",
+    "{S17_T03}": "R$",
+    "{S17_T04}": "R$",
+    "{S17_T05}": "R$",
+    "{S17_T06}": "4.990,00",
+    "{S17_T07}": "4.490,00",
+    "{S17_T08}": "4.290,00",
+    "{S17_T09}": "por mês ",
+    "{S17_T10}": "por mês ",
+    "{S17_T11}": "por mês ",
+    "{S17_T12}": "Quanto mais tempo juntos, mais resultados conseguimos construir.",
+    "{S17_T13}": "Escolha o plano ideal para o seu Crescimento.",
+    "{S17_T14}": "Mais tempo, \nmais economia.",
+    "{S17_T15}": "Mais tempo de parceria, mais valor para sua operação.",
+    "{S17_T16}": "Parcela inicial (no mesmo valor da parcela mensal) + Valores mensais conforme plano",
+    "{S17_T17}": "Parcela inicial logo após o kick-off\u000bParcela 1 ao mês subsequente após o go-live do produto",
+    "{S18_T00}": "Início do serviço",
+    "{S18_T01}": "Após assinatura do contrato e disponibilização dos acessos necessários para execução das atividades.",
+    "{S18_T02}": "Prazo de Execução",
+    "{S18_T03}": "Prazo estimado de implantação: até 30 dias. Esse prazo poderá ser ajustado mediante o planejamento conjunto entre Mosten e Netafim, considerando a disponibilidade das equipes e validações do projeto.",
+    "{S18_T04}": "Faturamento",
+    "{S18_T05}": "Parcela inicial: após o Kick-off.\nParcelas 1 a 12/24/36: pagas no 1º dia útil do mês subsequente à disponibilização do TMS. \n\nFaturamento mensal com emissão de Nota Fiscal e boleto bancário, conforme recorrência contratada, com vencimento todo dia 10 de \ncada mês.",
+    "{S18_T06}": "Impostos",
+    "{S18_T07}": "Todos os impostos sobre os serviços estão incluídos nos valores apresentados. Alterações tributárias, fiscais ou legais que impactem diretamente a operação poderão ser repactuadas entre as partes.",
+    "{S18_T08}": "Atraso no pagamento",
+    "{S18_T09}": "Em caso de atraso no pagamento, poderá incidir multa de 5% sobre o valor em aberto, acrescida de juros de 2% ao mês, calculados pró-rata die.",
+    "{S18_T10}": "Responsabilidades do Cliente",
+    "{S18_T11}": "A Netafim será responsável por disponibilizar as informações necessárias, indicar os usuários-chave, informar e validar todas as regras de negócio específicas da operação, e garantir um ambiente de testes ou homologação para que a parametrização do TMS seja realizada com segurança e total alinhamento à operação real do embarcador.",
+    "{S18_T12}": "Nossas Condições Comerciais",
+    "{S18_T13}": "Modelo de Execução",
+    "{S18_T14}": "Trabalhamos de forma remota. Quando houver necessidade de atividades presenciais, as despesas de deslocamento serão reembolsadas, acrescidas de 10% referente à gestão da Mosten.",
+    "{S19_T00}": "Somos a",
+    "{S19_T01}": "Somos a parceira que une o que há de melhor em negócios e tecnologia para promover crescimento, eficiência e resultado que impacta positivamente.\n\nNossa especialidade é otimizar e integrar processos, sistemas e estratégias, sempre comprometidos com o suporte para implementar mudanças, acelerar resultados e alcançar o potencial máximo dos nossos clientes.",
+    "{S19_T02}": "Tecnologia e Negócios Caminham Juntos",
+    "{S19_T03}": "Foco\nNos resultados \nque importam",
+    "{S19_T04}": "Parceria\nColaboração próxima \ne transparente",
+    "{S19_T05}": "Evolução\nMelhoria contínua \ne sustentável.",
+    "{S20_T00}": "A virada da Netafim\nInicia conosco",
+    "{S20_T01}": "Vamos juntos?\nConte comigo para este próximo passo.\n",
+    "{S20_T02}": "(13) 99671-5558\n\nDanilo.abbondanza@mosten.com.br\n\nDanilo Abbondanza | Comercial"
+  }
+}
