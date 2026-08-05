@@ -1,0 +1,64 @@
+---
+description: Filosofia e regras de fidelidade dos slides de Cronograma / Plano de Execução — nunca inventar prazos, fases ou entregáveis
+globs: generator/llm.py,data/**/*.json,data/**/*.pptx
+alwaysApply: false
+---
+
+# Slides de Cronograma / Plano de Execução
+
+Ao gerar ou revisar cronograma (tipicamente S13–S15), siga esta regra. Não vende funcionalidades. Transmite **segurança de execução**.
+
+O cliente deve pensar: *"Existe um plano. Eles sabem exatamente como conduzir esse projeto."*
+
+Slide **executivo**, não comercial. Preferível espaço vazio a informação incorreta.
+
+## Quatro perguntas (só responder com dados reais)
+
+1. **Como será conduzido?** — fases sequenciais, etapa única, etc. (só se constar no brief)
+2. **O que será entregue?** — só entregas documentadas (diagnóstico, MVP, plataforma, roadmap…)
+3. **Quanto tempo?** — semanas/meses/horas só se houver estimativa; senão vazio
+4. **Qual a jornada?** — evolução lógica do projeto; nunca reorganizar para “ficar bonito”
+
+## Fidelidade absoluta — NUNCA inventar
+
+semanas · horas · nº de fases · nomes das fases · entregáveis · POC · MVP · workshops · treinamentos · homologação · Go Live · Scrum · Sprints · equipe · metodologia ágil
+
+Se não estiver no material do projeto → **campo vazio** (string vazia `""`).
+
+### Quando faltar informação
+
+| Brief tem… | Preencher… | Não fazer |
+|---|---|---|
+| "Duração: 4 semanas" | só 4 semanas | inventar fases |
+| "Será entregue um MVP" | só o entregável | criar cronograma |
+| "Duas etapas" | Fase 1 / Fase 2 | inventar nomes |
+
+## Estrutura
+
+1. **Título** — apresenta a jornada (nunca só "Cronograma"). Ex.: *Uma jornada estruturada para transformar a operação* · *Da descoberta à operação*
+2. **Subtítulo** — objetivo do plano (riscos, previsibilidade, entregas claras)
+3. **Introdução** — ≤2 parágrafos; por que esse processo (só se houver método real no brief)
+4. **Fases** — Nome + Objetivo + Atividades + Entregas **somente se existirem**
+5. **Indicadores** — semanas, horas, data, sprint, fases, equipe **somente se houver dados**
+
+## Linguagem
+
+Organização, controle, clareza, previsibilidade, baixo risco, execução. Zero comercial.
+
+Evitar: excelente, incrível, moderno, inteligente, revolucionário.
+
+## Tipos (só moldar o que já existe no brief)
+
+- Consultoria → diagnóstico, workshops, análises, roadmap
+- Discovery → entendimento, mapeamento, recomendações
+- MVP → backlog, construção, validação
+- Plataforma → arquitetura, desenvolvimento, homologação, Go Live
+- Implantação → parametrização, treinamento, migração, suporte
+
+Usar o tipo só para organizar o que **já está documentado** — nunca para preencher lacunas.
+
+## Validação (tudo deve ser sim)
+
+Semanas/fases/entregáveis existem na origem? Nada criado por inferência? Transmite organização? Lacunas permaneceram vazias?
+
+> Um cronograma incompleto, porém fiel, vale mais que um cronograma detalhado baseado em suposições.

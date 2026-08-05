@@ -1,0 +1,57 @@
+---
+description: Filosofia e estrutura obrigatória dos slides de Solução / Oportunidade na geração de propostas Mosten
+globs: generator/llm.py,data/**/*.json,data/**/*.pptx
+alwaysApply: false
+---
+
+# Slides de Solução / Oportunidade
+
+Ao gerar ou revisar solução/oportunidade (tipicamente S06 e visão S07–S09), siga esta regra. Não lista funcionalidades. Mostra como a operação passa a funcionar.
+
+O cliente deve pensar: *"Essa é a operação que queremos construir."*
+
+Tecnologia = meio. Protagonista = resultado operacional.
+
+## Contraste com o slide de Dor
+
+| Dor | Solução |
+|---|---|
+| Cliente se reconhece no problema | Cliente se reconhece no futuro desejado |
+| Limitações da operação atual | Capacidades da operação futura |
+| Impactos negativos / urgência | Benefícios / confiança na mudança |
+| Protagonista = dor do negócio | Protagonista = evolução do negócio |
+| Não apresenta solução | Não vende software; vende nova forma de operar |
+
+## Sequência narrativa obrigatória
+
+1. **Visão** — Título comunica transformação. Sujeito = operação/gestão/empresa/projeto/negócio. Nunca o sistema. (6–14 palavras)
+2. **Benefício principal** — Subtítulo 1–2 linhas: "O que essa solução entrega?" Não repete o título. Sem features.
+3. **Construção** — Lógica de negócio (2–3 parágrafos: proposta → transformação → impacto). Sem telas, módulos, banco de dados.
+4. **Benefícios** — 4–6 capacidades da nova operação (título ≤3 palavras + descrição ≤2 linhas). Nunca Dashboard/API/OCR/IA.
+5. **Fechamento** — Nova capacidade prepara o negócio para o futuro. A solução não termina no projeto.
+
+## Títulos — proibido vs correto
+
+✘ Sistema Web · Portal Administrativo · Módulo Financeiro · Dashboard Gerencial · Aplicação Corporativa
+
+✔ Uma Visão Estratégica para Fortalecer sua Operação · Uma Operação que enxerga antes de reagir · Gestão Inteligente para decisões mais rápidas
+
+## Linguagem
+
+Consultiva, inspiradora, executiva, estratégica, madura, objetiva. Confiança, nunca euforia.
+
+Verbos: fortalecer, integrar, conectar, consolidar, estruturar, preparar, ampliar, simplificar, acelerar, organizar, evoluir, potencializar.
+
+Evitar: revolucionar, destruir paradigmas, disruptivo, inovador (sem contexto), tecnologia de ponta, IA quando não for o foco.
+
+## Mensagem implícita (uma delas)
+
+Operação integrada · Capacidade de gestão · Decisões sem dependência manual · Informação apoia o crescimento · Tecnologia fortalece a operação
+
+## Proibições
+
+Lista de funcionalidades · catálogo de módulos · arquitetura · integrações · linguagem comercial excessiva · repetir as dores do slide anterior · vender tecnologia · falar mais do sistema do que do negócio · títulos técnicos
+
+## Validação (tudo deve ser sim)
+
+Título = visão de futuro (não nome de sistema)? Subtítulo complementa sem repetir? Corpo = transformação da operação (não arquitetura)? Benefícios = capacidades (não features)? Linguagem confiante e estratégica? Responde "como será a operação depois da implantação?"

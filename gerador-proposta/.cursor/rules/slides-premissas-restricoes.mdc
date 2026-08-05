@@ -1,0 +1,66 @@
+---
+description: Filosofia e fidelidade dos slides de Premissas e Restrições — nunca inventar condições, dependências ou exclusões
+globs: generator/llm.py,data/**/*.json,data/**/*.pptx
+alwaysApply: false
+---
+
+# Slides de Premissas e Restrições
+
+Ao gerar ou revisar premissas/restrições (tipicamente S16), siga esta regra. Não vende. Esclarece, protege e alinha expectativas.
+
+O cliente deve pensar: *"Está claro o que depende de nós, o que depende da Mosten e quais são os limites deste projeto."*
+
+Toda informação precisa existir em documento do projeto. Preferível bloco vazio a conteúdo inventado.
+
+## Quatro perguntas
+
+1. O que consideramos verdadeiro para executar?
+2. Quais condições precisam existir?
+3. Quais são os limites deste escopo?
+4. O que não está contemplado?
+
+## Premissa vs Restrição
+
+| Premissa | Restrição |
+|---|---|
+| Condição assumida como verdadeira | Limite / o que não faz parte do escopo |
+| Dependência esperada | Exclusão explícita |
+| Ex.: acessos, dados, stakeholders, ambiente | Ex.: sem integração tempo real, sem infra, sem migração |
+
+Só usar itens **explicitamente documentados**. Se houver 2 premissas → mostrar 2. Nunca completar.
+
+## Fidelidade absoluta — NUNCA inventar / assumir
+
+integrações · responsabilidades · disponibilidade · ambiente · infraestrutura · APIs · LGPD · SSO · ERP · Go Live · homologação · Cloud/SaaS · Azure/AWS · Active Directory · SQL · Backup · "cliente validará entregas"
+
+Nunca substituir lacunas por boas práticas genéricas.
+
+### Fontes (ordem de prioridade)
+
+1. Documento de escopo  
+2. Discovery operacional  
+3. Documento funcional  
+4. Contrato  
+5. Ata de reunião  
+6. Backlog aprovado  
+
+Se nenhuma fonte contiver premissas/restrições → **não gerar conteúdo** (slots = `""`).
+
+## Estrutura
+
+1. **Título** — alinhamento. Ex.: *O que vamos precisar* · *Premissas para execução* · *Condições para o sucesso do projeto*
+2. **Subtítulo** — motivo (execução previsível, escopo consolidado)
+3. **Premissas** — itens curtos, objetivos, sem justificativas longas (só fatos confirmados)
+4. **Restrições** — só fatos; nunca interpretações
+
+## Linguagem
+
+Objetiva, executiva, neutra. Sem tom comercial.
+
+Evitar: Importante, Vale lembrar, Excelente, Inovador, Robusto, Moderno, Inteligente.
+
+## Validação (tudo deve ser sim)
+
+Itens existem na origem? Nada por inferência? Nenhuma boa prática virando premissa? Textos curtos? Lacunas vazias?
+
+> Poucas premissas/restrições reais transmitem mais credibilidade do que um slide completo baseado em suposições.

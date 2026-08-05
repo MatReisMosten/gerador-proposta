@@ -13,7 +13,7 @@ from pathlib import Path
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(APP_DIR))
 
-from generator import build_deck, fill_slots, load_slot_catalog  # noqa: E402
+from generator import build_livre_deck, fill_slots, load_named_token_catalog  # noqa: E402
 from generator import paths as P  # noqa: E402
 
 
@@ -34,7 +34,7 @@ def main() -> None:
         sys.exit("Informe --api-key ou PROPOSAL_API_KEY")
 
     brief = Path(args.brief).read_text(encoding="utf-8")
-    catalog = load_slot_catalog()
+    catalog = load_named_token_catalog()
     example = None
     if P.example_values_path().is_file():
         example = json.loads(P.example_values_path().read_text(encoding="utf-8")).get("vigia")
@@ -55,8 +55,14 @@ def main() -> None:
         P.output_dir() / f"{args.code or 'PROPOSTA'} - {date.today().isoformat()}.pptx"
     )
     logo = Path(args.logo) if args.logo else None
-    build_deck(values, output_path=out, logo_path=logo)
-    print(f"OK: {out}")
+    build_livre_deck(
+        values,
+        output_path=out,
+        logo_path=logo,
+        client_name=args.client,
+        project_code=args.code,
+    )
+    print(f"OK: {out} ({len(catalog)} tokens)")
 
 
 if __name__ == "__main__":

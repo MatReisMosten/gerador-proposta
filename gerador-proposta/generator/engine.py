@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import sys
+from datetime import date
 from pathlib import Path
 
 from pptx import Presentation
+from pptx.enum.shapes import MSO_SHAPE_TYPE
+from pptx.enum.text import MSO_AUTO_SIZE
 from pptx.util import Pt
 
 from . import paths as P
@@ -18,6 +22,13 @@ from proposal_library.placeholder_applier import (  # noqa: E402
     _iter_shapes,
     _set_shape_text,
 )
+
+# Named tokens in the master template: {TITULO_DOR}, {BREVE_DESCRICAO}, …
+_NAMED_TOKEN_RE = re.compile(r"\{([A-Za-z][A-Za-z0-9_]*)\}")
+# Legacy parameterized junk left in some shapes
+_SLOT_JUNK_RE = re.compile(r"^S\d+_T\d+$", re.IGNORECASE)
+_LOGO_TOKEN_NAMES = frozenset({"LOGO_CLIENTE", "Logo_Cliente"})
+_EMPTY_TOKENS = frozenset({ "{}", "{ }" })
 
 
 def shape_full_text(shape) -> str:
@@ -215,6 +226,443 @@ def replace_logo_cliente(pptx_path: Path, logo_path: Path) -> int:
     if replaced:
         prs.save(str(pptx_path))
     return replaced
+
+
+def keep_only_slides(pptx_path: Path, slides_1based: list[int] | set[int]) -> int:
+    """Keep only the given 1-based slide numbers; delete the rest. Returns removed count."""
+    keep = {int(s) for s in slides_1based}
+    prs = Presentation(str(pptx_path))
+    removed = 0
+    for i in range(len(prs.slides) - 1, -1, -1):
+        if (i + 1) not in keep:
+            delete_slide(prs, i)
+            removed += 1
+    prs.save(str(pptx_path))
+    return removed
+
+
+def _normalize_token_key(token: str) -> str:
+    """Ensure key looks like {NAME}."""
+    t = (token or "").strip()
+    if not t:
+        return ""
+    if not (t.startswith("{") and t.endswith("}")):
+        t = "{" + t.strip("{}") + "}"
+    return t
+
+
+def is_fillable_named_token(token: str) -> bool:
+    """True if token should be filled by LLM / named fill (not logo, not junk, not empty)."""
+    key = _normalize_token_key(token)
+    if not key or key in _EMPTY_TOKENS or key in P.KEEP_AS_IS:
+        return False
+    inner = key[1:-1]
+    if not inner or inner.isspace():
+        return False
+    if inner in _LOGO_TOKEN_NAMES:
+        return False
+    if _SLOT_JUNK_RE.match(inner):
+        return False
+    return bool(_NAMED_TOKEN_RE.fullmatch(key))
+
+
+def scan_named_tokens(pptx_path: Path) -> dict[str, dict]:
+    """
+    Discover named {TOKEN} placeholders in a PPTX.
+    Returns token → {slides: [1-based], count, sections: [names]}.
+    Ignores empty {}, logo markers, and legacy {S##_T##} junk.
+    Raw text without braces is never returned.
+    """
+    from .packages import read_pptx_sections
+
+    pptx_path = Path(pptx_path)
+    prs = Presentation(str(pptx_path))
+    sections = read_pptx_sections(pptx_path)
+    slide_to_section: dict[int, str] = {}
+    for name, slides in sections.items():
+        for s in slides:
+            slide_to_section[s] = name
+
+    found: dict[str, dict] = {}
+
+    def note(token_inner: str, slide_no: int) -> None:
+        key = "{" + token_inner + "}"
+        if not is_fillable_named_token(key):
+            return
+        info = found.setdefault(
+            key,
+            {"slides": [], "count": 0, "sections": []},
+        )
+        info["count"] += 1
+        if slide_no not in info["slides"]:
+            info["slides"].append(slide_no)
+        sec = slide_to_section.get(slide_no)
+        if sec and sec not in info["sections"]:
+            info["sections"].append(sec)
+
+    def scan_text(text: str, slide_no: int) -> None:
+        for m in _NAMED_TOKEN_RE.finditer(text or ""):
+            note(m.group(1), slide_no)
+
+    def walk(shapes, slide_no: int) -> None:
+        for shape in shapes:
+            if shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+                walk(shape.shapes, slide_no)
+                continue
+            if shape.shape_type == MSO_SHAPE_TYPE.TABLE:
+                for row in shape.table.rows:
+                    for cell in row.cells:
+                        scan_text(cell.text, slide_no)
+                continue
+            if getattr(shape, "has_text_frame", False) and shape.has_text_frame:
+                scan_text(shape.text_frame.text, slide_no)
+
+    for si, slide in enumerate(prs.slides, start=1):
+        walk(slide.shapes, si)
+
+    # Stable order by first slide then name
+    return dict(
+        sorted(
+            found.items(),
+            key=lambda kv: (min(kv[1]["slides"] or [999]), kv[0]),
+        )
+    )
+
+
+def load_named_token_catalog(pptx_path: Path | None = None) -> dict[str, dict]:
+    """Catalog for the LLM: {TOKEN} → {slides, sections, count, role/writing hints}."""
+    path = Path(pptx_path) if pptx_path else P.master_template_path()
+    scanned = scan_named_tokens(path)
+    catalog: dict[str, dict] = {}
+    for key, info in scanned.items():
+        sections = info.get("sections") or []
+        section = sections[0] if sections else ""
+        role = _guess_token_role(key, section)
+        catalog[key] = {
+            "role": role,
+            "writing": _writing_guidance(role),
+            "slide": (info.get("slides") or [None])[0],
+            "slides": info.get("slides") or [],
+            "sections": sections,
+            "section": section,
+            "count": info.get("count", 1),
+            "original_example": key,
+        }
+    return catalog
+
+
+def _guess_token_role(token: str, section: str) -> str:
+    """
+    Classify named tokens for writing density.
+
+    Roles:
+    - title / subtitle / cover / label / step / bullet / meta → short
+    - card_desc → 1–2 sentences under a title/card
+    - narrative → 2–3 short paragraphs under a section title
+    """
+    name = token.strip("{}").upper()
+    section_u = (section or "").upper()
+
+    if name in {"COD_PROJ", "COD_CLIENTE", "DATA", "DATA_ATUAL", "NOME_CLIENTE"}:
+        return "meta"
+    if name.startswith("STEP_") or name == "SEMANAS":
+        return "step"
+    if name.startswith("BULLET") or name.endswith("_BULLETS") or name.startswith("ITENS_"):
+        return "bullet"
+    if name.startswith("SUB_") or name.startswith("SUBTITULO") or name.startswith("BREVE"):
+        return "subtitle"
+    if name == "DESC_TITULO":
+        return "subtitle"
+    if (
+        name.startswith("TITULO")
+        or name.endswith("_TITULO")
+        or name in {"OBJETIVO_TITULO", "RESULT_TITULO", "ENTREGA_TITULO"}
+    ):
+        return "title"
+    if name.startswith("CARD_") and name.endswith("_TITULO"):
+        return "label"
+    if name.startswith("EXEC_") and name.endswith("_TITULO"):
+        return "label"
+    if name.startswith("CARD_") and not name.endswith("_DESC"):
+        return "label"
+
+    # Supporting text under a card / item / pillar (1–2 sentences)
+    if (
+        name.startswith("CARD_")
+        or re.fullmatch(r"DESC_[1-7]_CARD", name)
+        or re.fullmatch(r"DESC_[1-7]_OPORT", name)
+        or re.fullmatch(r"DESC_[1-7]_ENTREGAVEL", name)
+        or re.fullmatch(r"DESC_SUB_DOR_[1-7]", name)
+        or name.endswith("_DESAFIO_DESC")
+        or (name.startswith("EXEC_") and name.endswith("_DESC"))
+        or name.startswith("IMPACTO_")
+        or name.startswith("PREM_")
+        or name.startswith("RESTR_")
+        or name.startswith("REST_")
+        or name.startswith("PREMISSA_")
+        or (name.startswith("ITEM_") and name.endswith("_DESC"))
+        or (name.startswith("ITEM_") and name.endswith("_OPORTUNIDADE"))
+    ):
+        return "card_desc"
+
+    if name.startswith("ITEM_"):
+        return "label"
+
+    # Main narrative body under the slide title (2–3 paragraphs)
+    if (
+        name.endswith("_DESC")
+        or name.startswith("DESC_")
+        or "DESCRICAO" in name
+        or name.startswith("RESULT_")
+        or name.startswith("ENTREGA_")
+        or name.startswith("DESC_SUB_")
+    ):
+        return "narrative"
+
+    if section_u.startswith("CAPA"):
+        return "cover"
+    return "narrative"
+
+
+def _writing_guidance(role: str) -> str:
+    return {
+        "title": "4–10 palavras; impacto; sem parágrafo",
+        "subtitle": "1–2 linhas; complementar o título; sem parágrafo longo",
+        "cover": "texto curto de capa; sem feature/arquitetura",
+        "label": "rótulo curto (2–5 palavras)",
+        "step": "etapa/indicador curto",
+        "bullet": "lista objetiva; sem parágrafo",
+        "meta": "metadado curto (código/data/cliente)",
+        "card_desc": "1–2 frases (10–22 palavras) sob o título do card",
+        "narrative": "2–3 parágrafos curtos separados por \\n\\n (45–90 palavras)",
+    }.get(role, "texto executivo objetivo")
+
+
+def livre_slide_indices(pptx_path: Path | None = None) -> list[int]:
+    """
+    1-based slides for Livre mode: all sections except Professional Service.
+    If sections missing, keep the whole deck.
+    """
+    from .packages import read_pptx_sections
+
+    path = Path(pptx_path) if pptx_path else P.master_template_path()
+    sections = read_pptx_sections(path)
+    prs = Presentation(str(path))
+    all_slides = list(range(1, len(prs.slides) + 1))
+    if not sections:
+        return all_slides
+    ps = set(sections.get("Professional Service") or [])
+    keep = [s for s in all_slides if s not in ps]
+    return keep or all_slides
+
+
+def build_livre_deck(
+    values: dict[str, str],
+    *,
+    output_path: Path,
+    logo_path: Path | None = None,
+    client_name: str = "",
+    project_code: str = "",
+    exclude_professional_service: bool = True,
+) -> Path:
+    """
+    Copy slide-mestre, optionally drop Professional Service slides,
+    replace ONLY named {TOKENS}, apply logo. Raw text stays untouched.
+    """
+    src = P.master_template_path()
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, output_path)
+
+    if exclude_professional_service:
+        keep = livre_slide_indices(src)
+        keep_only_slides(output_path, keep)
+
+    today = date.today().strftime("%d/%m/%Y")
+    merged: dict[str, str] = {
+        "{COD_PROJ}": (project_code or "").strip() or "A definir",
+        "{COD_CLIENTE}": (project_code or "").strip() or "A definir",
+        "{DATA}": today,
+        "{DATA_ATUAL}": today,
+        "{NOME_CLIENTE}": (client_name or "").strip() or "Cliente",
+        "{Nome_cliente}": (client_name or "").strip() or "Cliente",
+    }
+    for k, v in values.items():
+        if k.startswith("_"):
+            continue
+        key = _normalize_token_key(k)
+        if not key or not is_fillable_named_token(key):
+            continue
+        # Empty string is intentional (cronograma/premissas sem dado)
+        merged[key] = "" if v is None else str(v)
+
+    apply_named_placeholders(output_path, merged)
+    clear_legacy_slot_tokens(output_path)
+    if logo_path:
+        replace_logo_cliente(output_path, Path(logo_path))
+    return output_path
+
+
+def apply_named_placeholders(pptx_path: Path, values: dict[str, str]) -> int:
+    """
+    Replace named placeholders like {COD_CLIENTE} in text frames and tables.
+    Skips empty {} and never invents content for non-placeholder text.
+    """
+    if not values:
+        return 0
+    # Ignore empty / logo markers (logo handled by replace_logo_cliente)
+    clean: dict[str, str] = {}
+    for k, v in values.items():
+        key = _normalize_token_key(k)
+        if (
+            not key
+            or key in _EMPTY_TOKENS
+            or key in P.KEEP_AS_IS
+            or key.startswith("_")
+        ):
+            continue
+        inner = key[1:-1]
+        if inner in _LOGO_TOKEN_NAMES or _SLOT_JUNK_RE.match(inner):
+            continue
+        clean[key] = "" if v is None else str(v)
+
+    # Alias Logo_Cliente ↔ LOGO_CLIENTE for any residual text fill
+    if "{LOGO_CLIENTE}" in clean and "{Logo_Cliente}" not in clean:
+        clean["{Logo_Cliente}"] = clean["{LOGO_CLIENTE}"]
+    if "{Logo_Cliente}" in clean and "{LOGO_CLIENTE}" not in clean:
+        clean["{LOGO_CLIENTE}"] = clean["{Logo_Cliente}"]
+
+    if not clean:
+        return 0
+    ordered = sorted(clean.items(), key=lambda kv: len(kv[0]), reverse=True)
+    prs = Presentation(str(pptx_path))
+    modified = 0
+
+    def replace_in_text_frame(tf) -> bool:
+        full = "\n".join(p.text for p in tf.paragraphs)
+        if not any(k in full for k, _ in ordered):
+            return False
+        remaining = []
+        for old, val in ordered:
+            placed = False
+            for para in tf.paragraphs:
+                for run in para.runs:
+                    if old in run.text:
+                        run.text = run.text.replace(old, val)
+                        placed = True
+            if not placed and old in "\n".join(p.text for p in tf.paragraphs):
+                remaining.append((old, val))
+        if remaining:
+            full2 = "\n".join(p.text for p in tf.paragraphs)
+            new = full2
+            for old, val in remaining:
+                new = new.replace(old, val)
+            if new != full2:
+                _set_shape_text_frame(tf, new)
+        final_text = "\n".join(p.text for p in tf.paragraphs)
+        if "\n\n" in final_text or len(final_text) > 120:
+            # Narrative body fields may contain 2–3 short paragraphs. Let
+            # PowerPoint reduce the font only when needed instead of clipping.
+            tf.word_wrap = True
+            tf.auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE
+        return True
+
+    def walk(shapes):
+        nonlocal modified
+        for shape in shapes:
+            if shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+                walk(shape.shapes)
+                continue
+            if shape.shape_type == MSO_SHAPE_TYPE.TABLE:
+                for row in shape.table.rows:
+                    for cell in row.cells:
+                        if replace_in_text_frame(cell.text_frame):
+                            modified += 1
+                continue
+            if getattr(shape, "has_text_frame", False) and shape.has_text_frame:
+                if replace_in_text_frame(shape.text_frame):
+                    modified += 1
+
+    for slide in prs.slides:
+        walk(slide.shapes)
+
+    if modified:
+        prs.save(str(pptx_path))
+    return modified
+
+
+def clear_legacy_slot_tokens(pptx_path: Path) -> int:
+    """Remove residual {S##_T##} placeholders without touching other raw text."""
+    prs = Presentation(str(pptx_path))
+    modified = 0
+
+    def clear_text_frame(tf) -> bool:
+        changed = False
+        for para in tf.paragraphs:
+            for run in para.runs:
+                new = re.sub(r"\{S\d+_T\d+\}", "", run.text, flags=re.IGNORECASE)
+                if new != run.text:
+                    run.text = new
+                    changed = True
+        if changed:
+            return True
+
+        full = "\n".join(p.text for p in tf.paragraphs)
+        new = re.sub(r"\{S\d+_T\d+\}", "", full, flags=re.IGNORECASE)
+        if new != full:
+            _set_shape_text_frame(tf, new)
+            return True
+        return False
+
+    def walk(shapes) -> None:
+        nonlocal modified
+        for shape in shapes:
+            if shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+                walk(shape.shapes)
+                continue
+            if shape.shape_type == MSO_SHAPE_TYPE.TABLE:
+                for row in shape.table.rows:
+                    for cell in row.cells:
+                        if clear_text_frame(cell.text_frame):
+                            modified += 1
+                continue
+            if getattr(shape, "has_text_frame", False) and shape.has_text_frame:
+                if clear_text_frame(shape.text_frame):
+                    modified += 1
+
+    for slide in prs.slides:
+        walk(slide.shapes)
+
+    if modified:
+        prs.save(str(pptx_path))
+    return modified
+
+
+def _set_shape_text_frame(tf, text: str) -> None:
+    """Write plain text into a text frame preserving first paragraph style lightly."""
+    lines = text.split("\n")
+    for i, para in enumerate(tf.paragraphs):
+        if i < len(lines):
+            if para.runs:
+                para.runs[0].text = lines[i]
+                for run in para.runs[1:]:
+                    run.text = ""
+            else:
+                para.text = lines[i]
+        else:
+            if para.runs:
+                for run in para.runs:
+                    run.text = ""
+            else:
+                para.text = ""
+    # extra lines
+    first = tf.paragraphs[0] if tf.paragraphs else None
+    for line in lines[len(tf.paragraphs) :]:
+        p = tf.add_paragraph()
+        p.text = line
+        if first is not None and first.runs:
+            # style copy is best-effort
+            pass
 
 
 def ensure_parameterized_template(force: bool = False) -> tuple[Path, dict, dict]:

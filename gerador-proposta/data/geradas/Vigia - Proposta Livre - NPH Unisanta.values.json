@@ -1,0 +1,257 @@
+{
+  "client": "NPH / Unisanta",
+  "code": "A definir",
+  "type": "livre",
+  "template": "/Users/matheusreis/Documents/hns-mvp/gerador-proposta/gerador-proposta/data/slide-mestre-template.pptx",
+  "slides": [
+    {
+      "order": 1,
+      "master_slide": 1,
+      "values": {
+        "{COD_PROJ}": "A definir",
+        "{DATA}": "05/08/2026",
+        "{TITULO_CAPA}": "Vigia: da previsão à proteção",
+        "{BREVE_DESCRICAO}": "Da previsão científica à ação da população.",
+        "{LOGO_CLIENTE}": "NPH / UNISANTA + MOSTEN"
+      }
+    },
+    {
+      "order": 2,
+      "master_slide": 5,
+      "values": {
+        "{TITULO_DESAFIO}": "O conhecimento já existe. O desafio é transformá-lo em ação.",
+        "{DESC_TITULO}": "O NPH já prevê eventos costeiros com elevada confiabilidade e reúne uma base científica consistente para antecipar cenários de risco.",
+        "{DESCRICAO_DESAFIO_1_DETALHADO}": "Maré, intensidade da chuva e os modelos IARA-BS e SACI-BS permitem reconhecer combinações críticas antes que seus efeitos alcancem o território. Esse conhecimento oferece uma base concreta para orientar ações preventivas.",
+        "{DESCRICAO_DESAFIO_2_DETALHADO}": "A maturidade científica já está estabelecida. O próximo avanço consiste em transformar previsões complexas em orientações simples, territorializadas e compreensíveis.\n\nO desafio deixou de ser apenas prever: agora é fazer a informação gerar decisões antes que o impacto aconteça.",
+        "{Logo_Cliente}": "NPH / UNISANTA"
+      }
+    },
+    {
+      "order": 3,
+      "master_slide": 3,
+      "values": {
+        "{TITULO_DESAFIO}": "Entre a previsão e a população existe uma lacuna",
+        "{SUB_DESC_DESAFIO}": "A ciência produz a previsão. A proteção depende de fazer essa informação atravessar toda a jornada até chegar às pessoas certas.",
+        "{DESC_DESAFIO}": "Mesmo com informações científicas consistentes, ainda existem barreiras entre a leitura dos modelos e a decisão cotidiana da população. O dado precisa ser interpretado, localizado e comunicado de forma adequada ao contexto de cada território.\n\nSem essa conexão, uma previsão confiável pode não se converter em comportamento preventivo — e o conhecimento perde parte de seu potencial de proteção.",
+        "{ITEM_1_CARD}": "Interpretação",
+        "{DESC_1_CARD}": "O dado científico precisa ganhar significado claro para quem tomará a decisão.",
+        "{ITEM_2_CARD}": "Segmentação",
+        "{DESC_2_CARD}": "O risco precisa ser associado ao bairro, à região e à comunidade exposta.",
+        "{ITEM_3_CARD}": "Comunicação",
+        "{DESC_3_CARD}": "A mensagem precisa alcançar rapidamente as pessoas que podem sofrer o impacto.",
+        "{ITEM_4_CARD}": "Validação",
+        "{DESC_4_CARD}": "A ocorrência observada precisa retornar ao NPH como evidência para evolução contínua."
+      }
+    },
+    {
+      "order": 4,
+      "master_slide": 8,
+      "values": {
+        "{TITULO_OPORTUNIDADE}": "Onde essa lacuna acontece",
+        "{DESC_OPORTUNIDADE}": "A lacuna não está na produção do conhecimento, mas no caminho que ele percorre até orientar uma ação. Cada etapa exige contexto, precisão territorial e uma linguagem que a população reconheça.\n\nQuando esse percurso é interrompido, a informação existe, porém não chega de forma útil às pessoas certas nem retorna à ciência como aprendizado.",
+        "{TITULO_1_OPORT}": "Tradução científica",
+        "{DESC_1_OPORT}": "O dado técnico precisa se tornar uma orientação clara, sem perder seu significado científico.",
+        "{TITULO_2_OPORT}": "Segmentação territorial",
+        "{DESC_2_OPORT}": "O risco varia entre bairros e comunidades; uma mensagem genérica reduz sua relevância.",
+        "{TITULO_3_OPORT}": "Comunicação dirigida",
+        "{DESC_3_OPORT}": "O alerta precisa alcançar quem está exposto, enquanto ainda é possível agir.",
+        "{TITULO_4_OPORT}": "Baixa adesão",
+        "{DESC_4_OPORT}": "Depender somente do cadastro espontâneo restringe a cobertura e deixa grupos vulneráveis de fora.",
+        "{TITULO_5_OPORT}": "Ausência de retorno",
+        "{DESC_5_OPORT}": "Sem confirmação da população, o impacto real permanece distante dos modelos e das análises.",
+        "{TITULO_6_OPORT}": "Capacidade de evolução",
+        "{DESC_6_OPORT}": "A operação precisa crescer com novos territórios, canais e eventos sem perder consistência.",
+        "{LOGO_CLIENTE}": "NPH / UNISANTA"
+      }
+    },
+    {
+      "order": 5,
+      "master_slide": 11,
+      "values": {
+        "{TITULO_SOLUCAO}": "Uma nova camada conecta ciência e sociedade",
+        "{SUB_TITULO_SOLUCAO}": "Vigia não substitui os modelos existentes. Potencializa seu impacto.",
+        "{TITULO_DESC_SOLUCAO}": [
+          "Modelos NPH",
+          "Vigia",
+          "População e feedback"
+        ],
+        "{DESC_SOLUCAO}": [
+          "Consolidam maré, chuva e comportamento costeiro em previsões científicas confiáveis para o território.",
+          "Converte a previsão em mensagem compreensível, segmenta o público e coordena a comunicação preventiva.",
+          "A população age diante do risco e devolve evidências; o NPH valida o impacto e fortalece o conhecimento."
+        ],
+        "{LOGO_CLIENTE}": "NPH / UNISANTA"
+      }
+    },
+    {
+      "order": 6,
+      "master_slide": 13,
+      "values": {
+        "{TITULO_SOLUCAO}": "Como a previsão se transforma em comunicação inteligente",
+        "{DESC_SOLUCAO}": "O Vigia organiza a jornada completa entre previsão e resposta. Cada capacidade elimina uma barreira específica da comunicação de risco.\n\nO resultado é uma operação que traduz conhecimento, alcança o território certo e aprende continuamente com a realidade observada.",
+        "{TITULO_ITENS}": "Os pilares do Vigia",
+        "{TITULO_1_ITEM}": "Tradução Inteligente",
+        "{TITULO_2_ITEM}": "Segmentação Territorial",
+        "{TITULO_3_ITEM}": "Distribuição de Alertas",
+        "{TITULO_4_ITEM}": "Feedback da População",
+        "{TITULO_5_ITEM}": "Painel de Gestão",
+        "{TITULO_6_ITEM}": "",
+        "{TITULO_7_ITEM}": "",
+        "{LOGO_CLIENTE}": "NPH / UNISANTA"
+      }
+    },
+    {
+      "order": 7,
+      "master_slide": 10,
+      "values": {
+        "{TITULO_OPORTUNIDADE}": "O risco chega em uma linguagem que orienta a ação",
+        "{SUB_TITULO_OPORTUNIDADE}": "Da leitura científica à mensagem compreensível",
+        "{DESC_OPORTUNIDADE}": "O Vigia interpreta os sinais dos modelos em conjunto com o contexto territorial e o nível de exposição. A complexidade científica é preservada na análise, mas simplificada na comunicação.\n\nA população recebe uma mensagem objetiva: o que está acontecendo, onde existe risco e qual comportamento reduz a exposição nas próximas horas.",
+        "{STEP_1}": "Entrada",
+        "{STEP_2}": "Interpretação",
+        "{STEP_3}": "Mensagem",
+        "{STEP_4}": "Ação",
+        "{TITULO_1_OPORTUNIDADE}": "Dados científicos",
+        "{ITEM_1_OPORTUNIDADE}": "Maré 2,15 m · Chuva classe 3 · IARA-BS",
+        "{TITULO_2_OPORTUNIDADE}": "Tradução inteligente",
+        "{ITEM_2_OPORTUNIDADE}": "Sinais convertidos em risco compreensível",
+        "{TITULO_3_OPORTUNIDADE}": "Alerta direcionado",
+        "{ITEM_3_OPORTUNIDADE}": "Zona Noroeste · risco moderado nas próximas horas",
+        "{TITULO_4_OPORTUNIDADE}": "Decisão preventiva",
+        "{ITEM_4_OPORTUNIDADE}": "Evite deslocamentos desnecessários"
+      }
+    },
+    {
+      "order": 8,
+      "master_slide": 9,
+      "values": {
+        "{TITULO_OPORTUNIDADE}": "Somente quem está em risco recebe o alerta",
+        "{DESC_OPORTUNIDADE}": "Eventos costeiros não afetam todo o município da mesma forma. A segmentação considera a área exposta e direciona a mensagem conforme a realidade de cada bairro, região ou comunidade.\n\nQuem está em risco recebe orientação relevante; quem está fora da área evita mensagens desnecessárias e mantém a confiança no canal.",
+        "{BULLET_OPORTUNIDADE}": "Precisão territorial para comunicar somente onde existe exposição real",
+        "{ITEM_1}": "Geofence",
+        "{ITEM_2}": "Bairro",
+        "{ITEM_3}": "Região",
+        "{ITEM_4}": "Comunidade",
+        "{ITEM_5}": "Público exposto",
+        "{LOGO_CLIENTE}": "NPH / UNISANTA"
+      }
+    },
+    {
+      "order": 9,
+      "master_slide": 7,
+      "values": {
+        "{TITULO_DESAFIO}": "A cobertura cresce por redes já presentes no território",
+        "{SUB_DESAFIO}": "Adesão com capilaridade",
+        "{DESC_DESAFIO}": "O Vigia não depende exclusivamente da iniciativa individual para formar sua base. Organizações que já atuam no território ajudam a conectar moradores, validar contatos e ampliar a confiança no cadastro.\n\nEssa rede cria capilaridade e aumenta a probabilidade de o alerta alcançar também os grupos mais expostos.",
+        "{ITEM_1_DESAFIO}": "Associações",
+        "{ITEM_1_DESAFIO_DESC}": "Mobilizam moradores, reforçam a legitimidade da iniciativa e apoiam a atualização dos contatos.",
+        "{ITEM_2_DESAFIO}": "Defesa Civil",
+        "{ITEM_2_DESAFIO_DESC}": "Conecta a comunicação preventiva à resposta pública e às prioridades de cada território.",
+        "{ITEM_3_DESAFIO}": "Agentes comunitários",
+        "{ITEM_3_DESAFIO_DESC}": "Aproximam a orientação das famílias e apoiam quem possui menor acesso aos canais digitais.",
+        "{ITEM_4_DESAFIO}": "Cadastro em lote",
+        "{ITEM_4_DESAFIO_DESC}": "Inclui grupos completos com governança, sem depender apenas da adesão individual."
+      }
+    },
+    {
+      "order": 10,
+      "master_slide": 12,
+      "values": {
+        "{TITULO_SOLUCAO}": "Comunicação em larga escala, sem exigir um novo aplicativo",
+        "{DESC_SOLUCAO}": "A primeira versão utiliza canais já presentes na rotina da população, reduzindo barreiras de adoção e acelerando o alcance da iniciativa.\n\nA distribuição combina escala e precisão: grandes bases podem ser acionadas sem perder a segmentação territorial de cada alerta.",
+        "{TITULO_1_ENTREGAVEL}": "WhatsApp",
+        "{DESC_1_ENTREGAVEL}": "Canal familiar para a população, com leitura rápida e baixa barreira de acesso.",
+        "{TITULO_2_ENTREGAVEL}": "PrismIA",
+        "{DESC_2_ENTREGAVEL}": "Orquestra mensagens e fluxos conforme público, território e evento.",
+        "{TITULO_3_ENTREGAVEL}": "Disparo massivo",
+        "{DESC_3_ENTREGAVEL}": "Permite alcançar grandes bases quando o risco exige uma resposta ampla.",
+        "{TITULO_4_ENTREGAVEL}": "Alertas segmentados",
+        "{DESC_4_ENTREGAVEL}": "Direciona cada comunicação segundo exposição, localização e contexto do alerta.",
+        "{EXEC_1_TITULO}": "Alcance",
+        "{EXEC_1_DESC}": "Canal conhecido pela população",
+        "{EXEC_2_TITULO}": "Precisão",
+        "{EXEC_2_DESC}": "Mensagem para quem está em risco",
+        "{EXEC_3_TITULO}": "Escala",
+        "{EXEC_3_DESC}": "Distribuição em grande volume",
+        "{EXEC_4_TITULO}": "Adoção",
+        "{EXEC_4_DESC}": "Sem aplicativo próprio no MVP"
+      }
+    },
+    {
+      "order": 11,
+      "master_slide": 20,
+      "values": {
+        "{TITULO_JORNADA}": "O ciclo não termina no envio",
+        "{DESC_1_JORNADA}": "O alerta orienta a população antes do evento. Após o impacto, o morador confirma a ocorrência e envia uma evidência fotográfica associada ao território.",
+        "{DESC_2_JORNADA}": "O NPH valida o que foi observado e compara a evidência com a previsão emitida.\n\nCada retorno fortalece os modelos científicos e torna a próxima comunicação mais precisa, relevante e conectada à realidade da população.",
+        "{LOGO_CLIENTE}": "NPH / UNISANTA"
+      }
+    },
+    {
+      "order": 12,
+      "master_slide": 14,
+      "values": {
+        "{RESULT_TITULO}": "Uma visão executiva do risco e da resposta",
+        "{RESULT_1_DESC}": "O painel consolida o que foi comunicado, onde o risco se concentra e como a população respondeu a cada evento. A gestão acompanha alcance, distribuição e retorno em uma visão única.",
+        "{RESULT_2_DESC}": "Com histórico e evidências organizados, o NPH amplia sua capacidade de validar ocorrências, identificar padrões e orientar a evolução da comunicação preventiva.",
+        "{CARD_1_TITULO}": "Alertas enviados",
+        "{CARD_1_DESC}": "Volume, horário, canal utilizado e público alcançado em cada comunicação preventiva.",
+        "{CARD_2_TITULO}": "Regiões monitoradas",
+        "{CARD_2_DESC}": "Leitura territorial das áreas expostas e dos cenários ativos em acompanhamento.",
+        "{CARD_3_TITULO}": "Confirmações recebidas",
+        "{CARD_3_DESC}": "Retornos enviados pela população após o evento, organizados por região e alerta.",
+        "{CARD_4_TITULO}": "Evidências e histórico",
+        "{CARD_4_DESC}": "Fotos e ocorrências preservadas para consulta, validação científica e aprendizado contínuo.",
+        "{LOGO_CLIENTE}": "NPH / UNISANTA"
+      }
+    },
+    {
+      "order": 13,
+      "master_slide": 16,
+      "values": {
+        "{ENTREGA_TITULO}": "NPH/Unisanta + Mosten: ciência e tecnologia a serviço da proteção costeira",
+        "{ENTREGA_1_DESC}": "O NPH/Unisanta entrega conhecimento científico, modelos costeiros e capacidade de pesquisa aplicada ao território.",
+        "{ENTREGA_2_DESC}": "A Mosten transforma esse conhecimento em inteligência, plataforma, arquitetura escalável e distribuição. Juntas, as competências formam uma solução completa de comunicação de risco."
+      }
+    },
+    {
+      "order": 14,
+      "master_slide": 17,
+      "values": {
+        "{TITULO_CRONO}": "Evolução da plataforma",
+        "{DESC_1_CRONO}": "A plataforma evolui em etapas, começando pelas capacidades essenciais para validar a comunicação de risco com a população.",
+        "{DESC_2_CRONO}": "Cada fase incorpora o aprendizado anterior e amplia gradualmente alcance, inteligência e integração institucional — sem antecipar complexidade antes de sua validação.",
+        "{ITEM_1_TITULO}": "Fase 1 — MVP",
+        "{ITEM_1_BULLETS}": "WhatsApp · Geofence · Feedback · Painel",
+        "{ITEM_2_TITULO}": "Fase 2 — Integração",
+        "{ITEM_2_BULLETS}": "Defesa Civil · Novos canais · Analytics",
+        "{ITEM_3_TITULO}": "Fase 3 — Expansão",
+        "{ITEM_3_BULLETS}": "Predição · Municípios · Integrações estaduais",
+        "{ITEM_4_TITULO}": "",
+        "{ITEM_4_BULLETS}": "",
+        "{SEMANAS}": "",
+        "{DESC_SEMANAS}": "",
+        "{LOGO_CLIENTE}": "NPH / UNISANTA"
+      }
+    },
+    {
+      "order": 15,
+      "master_slide": 15,
+      "values": {
+        "{RESULT_TITULO}": "Ciência, tecnologia e sociedade atuam juntas antes do impacto",
+        "{RESULT_DESC}": "Uma pessoa na Zona Noroeste recebe um alerta antes da ocorrência, compreende imediatamente o nível de risco e toma uma decisão preventiva.\n\nApós o evento, sua evidência retorna ao NPH, fortalece os modelos e melhora continuamente a proteção de toda a população.",
+        "{CARD_1_TITULO}": "Alerta antecipado",
+        "{CARD_1_DESC}": "A mensagem chega enquanto ainda existe tempo para reduzir a exposição ao evento.",
+        "{CARD_2_TITULO}": "Risco compreendido",
+        "{CARD_2_DESC}": "O conteúdo traduz a ciência em orientação clara para a realidade daquele território.",
+        "{CARD_3_TITULO}": "Decisão tomada",
+        "{CARD_3_DESC}": "A pessoa ajusta deslocamentos e comportamento com base em informação confiável.",
+        "{CARD_4_TITULO}": "Impacto confirmado",
+        "{CARD_4_DESC}": "O morador registra a ocorrência e transforma experiência local em evidência útil.",
+        "{CARD_5_TITULO}": "Ciência fortalecida",
+        "{CARD_5_DESC}": "O retorno validado aprimora os modelos e aumenta a precisão das próximas comunicações.",
+        "{LOGO_CLIENTE}": "NPH / UNISANTA"
+      }
+    }
+  ]
+}

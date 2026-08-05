@@ -1,0 +1,59 @@
+---
+description: Filosofia e estrutura obrigatória dos slides de Desafio (Dor do Cliente) na geração de propostas Mosten
+globs: generator/llm.py,data/**/*.json,data/**/*.pptx
+alwaysApply: false
+---
+
+# Slides de Desafio (Dor do Cliente)
+
+Ao gerar ou revisar conteúdo de desafio/dor (beats Context → Challenge → Impact, tipicamente S03–S05), siga esta regra. Não vende tecnologia. Não apresenta funcionalidades. Cria identificação.
+
+O cliente deve pensar: *"Eles entenderam exatamente o nosso cenário."*
+
+## Filosofia
+
+Nunca trate a dor como incompetência. A narrativa parte de evolução:
+
+> O negócio evoluiu → a complexidade aumentou → os processos atuais já não acompanham.
+
+## Sequência narrativa obrigatória
+
+1. **Contextualização** — Comece pelo momento atual (crescimento, escala, nova fase). Nunca comece pela dor.
+2. **Ruptura** — Contraste com *porém / entretanto / mas / à medida que / com o crescimento*.
+3. **Consequências** — Impactos de negócio (visibilidade, retrabalho, custos, riscos, decisão, produtividade, dependência de pessoas, processos manuais). Protagonista = negócio. Zero sistemas/ERP/IA.
+4. **Materialização** — 4 a 6 sintomas da rotina (ícone + título curto + descrição objetiva). Sintomas operacionais, nunca problemas técnicos (*✘ falta API / ✘ não tem dashboard*).
+5. **Fechamento** — A empresa chegou a um momento de evolução. Sem solução, sem features. Prepare o próximo slide.
+
+## Títulos
+
+Contraste em duas linhas: realidade atual → nova necessidade. Destaque visual na segunda linha.
+
+Exemplos: *Uma Operação Estruturada / Diante de Novos Desafios* · *A Obra vai Evoluir / O Portal também Precisa*
+
+## Corpo
+
+2–3 parágrafos: (1) contexto · (2) onde surgem limitações · (3) consequências para o negócio.
+
+## Cards
+
+Sintomas da operação, não funcionalidades. Título curto + descrição em até 2 linhas.
+
+Ex.: *Baixa previsibilidade financeira* — Custos e receitas consolidados só após o encerramento das operações.
+
+## Linguagem Mosten
+
+Consultiva, executiva, madura, objetiva, baseada em negócio. Evitar marketing, superlativos, promessas, buzzwords, jargão técnico, sensacionalismo.
+
+## Imagem
+
+Representar a operação do cliente (logística, indústria, porto, equipamentos, documentos, pessoas, visão isométrica). Evitar imagens genéricas de tecnologia.
+
+## Proibições
+
+- Apresentar solução, vender software, listar funcionalidades
+- Falar de tecnologia antes da necessidade
+- Linguagem comercial / criticar a operação / exagerar / inventar dores fora do Discovery
+
+## Validação (tudo deve ser sim)
+
+Cliente se reconhece? Narrativa parte do contexto? Impactos de negócio? Cards = sintomas reais? Solução ainda não apareceu? Transição natural ao próximo slide? Linguagem consultiva?

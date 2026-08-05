@@ -41,6 +41,21 @@ fi
   cp -f "$ASSETS/logo-nph.png" "$DATA/assets/" && \
   echo "  OK  logo-nph.png"
 
+# Tipos / pacotes de proposta
+if [[ -f "$APP_ROOT/data/packages.json" ]]; then
+  echo "  OK  packages.json (já em data/)"
+elif [[ -f "$UNISANTA/packages.json" ]]; then
+  cp -f "$UNISANTA/packages.json" "$DATA/" && echo "  OK  packages.json"
+fi
+mkdir -p "$DATA/packages"
+if [[ -d "$UNISANTA/packages" ]]; then
+  cp -f "$UNISANTA/packages/"*.pptx "$DATA/packages/" 2>/dev/null || true
+fi
+if [[ -d "$APP_ROOT/data/packages" ]]; then
+  # keep local package templates
+  echo "  OK  packages/ ($(ls "$DATA/packages" 2>/dev/null | wc -l | tr -d ' ') pptx)"
+fi
+
 # Marker para paths.py
 touch "$DATA/.bundled"
 

@@ -1,0 +1,62 @@
+---
+description: Filosofia e hierarquia obrigatória dos slides de Capa na geração de propostas Mosten
+globs: generator/llm.py,data/**/*.json,data/**/*.pptx
+alwaysApply: false
+---
+
+# Slides de Capa
+
+Ao gerar ou revisar capas (tipicamente S01–S02), siga esta regra. A capa transmite visão e posicionamento — não é só o nome do projeto.
+
+O cliente deve pensar: *"Essa proposta não é apenas um orçamento. Existe uma estratégia por trás."*
+
+## Filosofia
+
+A capa vende transformação e o futuro desejado. Demonstra que a Mosten compreendeu o objetivo do cliente antes de qualquer detalhe técnico. Texto com segurança, clareza e direção.
+
+Cada placeholder é preenchido **individualmente**. Nunca juntar título+subtítulo num bloco. Nunca repetir o mesmo conteúdo em campos diferentes.
+
+## Hierarquia dos campos
+
+| Campo | Função | Limite |
+|---|---|---|
+| Título principal | Transformação principal (maior texto) | 4–10 palavras, ritmo, impacto imediato |
+| Subtítulo | O que a proposta pretende transformar | 1–3 linhas; não repete o título |
+| Categoria | Identificação institucional | Ex.: Proposta Técnica e Comercial |
+| Descrição | Complementa o subtítulo; valor de negócio | 2–4 linhas; sem listas/bullets |
+| Diferenciais (se houver) | Benefícios percebidos, nunca features | 3–5 itens; máx. 3 palavras cada |
+
+### Título — proibido
+✘ Sistema de Gestão · Plataforma Web · Aplicação Corporativa · Desenvolvimento de Software · Projeto Digital · Software Corporativo
+
+✔ Evoluindo a Gestão da Transslog Transportes · Portal Oficial do Túnel Santos–Guarujá · Nova Visão para a Gestão Logística
+
+### Subtítulo — proibido vs correto
+✘ Sistema desenvolvido em React integrado ao ERP  
+✔ Uma plataforma preparada para integrar informações, fortalecer processos e ampliar a capacidade de gestão
+
+### Diferenciais (exemplo)
+Gestão Inteligente · Processos Integrados · Decisões Estratégicas
+
+## Linguagem
+
+Inspiradora, estratégica, executiva, madura, objetiva, institucional.
+
+Verbos preferidos: transformar, evoluir, fortalecer, integrar, ampliar, conectar, simplificar, potencializar, modernizar, consolidar, acelerar.
+
+Evitar: revolucionar, incrível, disruptivo, inovador (isolado), melhor do mercado, solução definitiva.
+
+## Mensagem implícita (uma delas)
+
+- Vamos estruturar uma operação mais eficiente
+- Vamos preparar sua empresa para o próximo estágio
+- Vamos transformar processos em capacidade de gestão
+- Vamos conectar estratégia, operação e tecnologia
+
+## Proibições
+
+Títulos técnicos · resumo da proposta · parágrafos longos · arquitetura · funcionalidades · repetir a mesma ideia · fundir campos · preencher placeholders com conteúdo idêntico
+
+## Validação (tudo deve ser sim)
+
+Título = transformação (não produto)? Subtítulo complementa sem repetir? Placeholders independentes? Hierarquia clara? Linguagem executiva/institucional? Desperta interesse? Valor claro sem features? Tamanhos respeitam o layout tipográfico do template?

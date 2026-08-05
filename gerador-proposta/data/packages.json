@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "types": [
+    {
+      "id": "professional_service",
+      "label": "Professional Service",
+      "mode": "package",
+      "description": "Gera só a seção Professional Service do slide mestre. Textos fixos permanecem; só {placeholders} e a tabela de investimento são preenchidos.",
+      "source": "master",
+      "template": "slide-mestre-template.pptx",
+      "section": "Professional Service",
+      "slides_1based": null,
+      "fields": [
+        {
+          "id": "perfil",
+          "label": "Perfil / papel",
+          "placeholder": "Desenvolvedor Full-Stack Sênior",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "id": "quantidade",
+          "label": "Quantidade",
+          "placeholder": "160",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "id": "valor_hora",
+          "label": "Valor hora",
+          "placeholder": "R$ 180,00",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "id": "total",
+          "label": "Total (opcional — calcula se vazio)",
+          "placeholder": "R$ 28.800,00",
+          "required": false,
+          "type": "text"
+        }
+      ],
+      "placeholders": {
+        "{COD_CLIENTE}": "project_code",
+        "{DATA_ATUAL}": "today",
+        "{NOME_CLIENTE}": "client_name",
+        "{Nome_cliente}": "client_name"
+      }
+    },
+    {
+      "id": "livre",
+      "label": "Livre",
+      "mode": "llm_full",
+      "description": "Proposta narrativa completa a partir de brief, transcrição e estimativa."
+    }
+  ]
+}

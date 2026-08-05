@@ -1,0 +1,67 @@
+---
+description: Filosofia e Future Pacing obrigatório dos slides de Visão Futura / Estado Futuro / Resultados Esperados
+globs: generator/llm.py,data/**/*.json,data/**/*.pptx
+alwaysApply: false
+---
+
+# Slides de Visão Futura / Estado Futuro / Resultados Esperados
+
+Ao gerar ou revisar visão futura (tipicamente S12 e fechamento de S20), siga esta regra. Materializa a transformação. Não vende a solução — vende o novo estado da operação.
+
+Progressão narrativa:
+- Dor → *"esse é o meu problema"*
+- Solução → *"essa abordagem faz sentido"*
+- Visão Futura → *"É assim que minha empresa estará daqui a um ano."*
+
+O cliente deve pensar: *"É exatamente essa operação que quero construir."* / *"Quero que minha operação funcione exatamente assim."*
+
+Cria **desejo** (aspiração), não urgência.
+
+## Filosofia
+
+O cliente compra uma nova realidade operacional — não software.
+Foco = a empresa **utilizando** a capacidade, não a plataforma.
+
+**Escrever no presente** (Future Pacing). O futuro precisa parecer real.
+
+✘ A empresa poderá… / A empresa conseguirá…  
+✔ A operação possui… / A equipe trabalha… / Os indicadores mostram… / As decisões acontecem…
+
+## Sequência narrativa (Future Pacing)
+
+1. **Nova realidade** — título = estado futuro (8–16 palavras). Sem tecnologia/sistema.
+2. **Frase de transformação** — subtítulo ≤2 linhas: "Como essa empresa passa a operar?"
+3. **Cenário** — 2–3 parágrafos: funcionamento → comportamento das equipes → impacto no negócio. Sem explicar a solução.
+4. **Benefícios** — 4–6 resultados (título ≤3 palavras + descrição ≤2 linhas). Responde "O que mudou?"
+5. **Fechamento** — frase curta e memorável consolidando o futuro.
+
+## Exemplos
+
+Títulos: *Uma operação preparada para crescer* · *Da operação reativa à gestão estratégica* · *Quando a informação trabalha pela operação*
+
+Benefícios: Rentabilidade Operacional · Controle da Operação · Escalabilidade · Eficiência · Previsibilidade · Visibilidade Financeira
+
+## Linguagem
+
+Aspiracional, executiva, madura, estratégica, inspiradora, objetiva — nunca exagerada.
+
+Verbos: consolidar, antecipar, enxergar, controlar, acelerar, crescer, fortalecer, integrar, escalar, prever, organizar, transformar.
+
+Priorizar: controle, resultado, visibilidade, previsibilidade, rentabilidade, governança, crescimento, segurança, autonomia, eficiência, maturidade.
+
+## Contraste com Solução
+
+| Solução | Visão Futura |
+|---|---|
+| Abordagem faz sentido | Empresa vivendo o resultado |
+| Capacidades da proposta | Comportamento operacional já real |
+| Explica a transformação | Descreve o dia seguinte como presente |
+| Confiança na mudança | Aspiração / desejo |
+
+## Proibições
+
+Módulos · telas · funcionalidades · APIs · integrações · repetir o slide de solução · implementação · arquitetura · voltar às dores · linguagem hipotética ("poderá", "conseguirá")
+
+## Validação (tudo deve ser sim)
+
+Cliente visualiza a empresa pós-implantação? Nova forma de operar (não features)? Presente real (não hipotético)? Benefícios = resultados de negócio? Foco em operação/pessoas/decisões? Desperta aspiração?
