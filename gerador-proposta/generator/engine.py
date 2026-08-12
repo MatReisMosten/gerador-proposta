@@ -363,7 +363,16 @@ def _guess_token_role(token: str, section: str) -> str:
     name = token.strip("{}").upper()
     section_u = (section or "").upper()
 
-    if name in {"COD_PROJ", "COD_CLIENTE", "DATA", "DATA_ATUAL", "NOME_CLIENTE"}:
+    if name in {
+        "COD_PROJ",
+        "COD_PROJETO",
+        "COD_CLIENTE",
+        "DATA",
+        "DATA_ATUAL",
+        "NOME_CLIENTE",
+        "VALOR",
+        "TEMPO_CONTRATO",
+    }:
         return "meta"
     if name.startswith("STEP_") or name == "SEMANAS":
         return "step"
@@ -438,9 +447,20 @@ def _writing_guidance(role: str) -> str:
     }.get(role, "texto executivo objetivo")
 
 
+# Sections isolated into package modes — excluded from Livre decks
+_LIVRE_EXCLUDED_SECTIONS = (
+    "Professional Service",
+    "SUPORTE",
+    "CONTROLE DE ACESSO (PASSLOG)",
+    "DISCOVERY",
+    "CLARION",
+)
+
+
 def livre_slide_indices(pptx_path: Path | None = None) -> list[int]:
     """
-    1-based slides for Livre mode: all sections except Professional Service.
+    1-based slides for Livre mode: all sections except package-only ones
+    (Professional Service, SUPORTE, PassLog, Discovery, Clarion).
     If sections missing, keep the whole deck.
     """
     from .packages import read_pptx_sections
@@ -451,8 +471,10 @@ def livre_slide_indices(pptx_path: Path | None = None) -> list[int]:
     all_slides = list(range(1, len(prs.slides) + 1))
     if not sections:
         return all_slides
-    ps = set(sections.get("Professional Service") or [])
-    keep = [s for s in all_slides if s not in ps]
+    excluded: set[int] = set()
+    for name in _LIVRE_EXCLUDED_SECTIONS:
+        excluded.update(sections.get(name) or [])
+    keep = [s for s in all_slides if s not in excluded]
     return keep or all_slides
 
 
@@ -466,7 +488,8 @@ def build_livre_deck(
     exclude_professional_service: bool = True,
 ) -> Path:
     """
-    Copy slide-mestre, optionally drop Professional Service slides,
+    Copy slide-mestre, optionally drop package-only sections
+    (Professional Service, SUPORTE, PassLog, Discovery, Clarion),
     replace ONLY named {TOKENS}, apply logo. Raw text stays untouched.
     """
     src = P.master_template_path()

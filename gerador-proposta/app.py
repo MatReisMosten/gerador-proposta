@@ -21,6 +21,22 @@ import streamlit as st
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(APP_DIR))
 
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(APP_DIR / ".env")
+except ImportError:
+    _env_path = APP_DIR / ".env"
+    if _env_path.is_file():
+        for _line in _env_path.read_text(encoding="utf-8").splitlines():
+            _line = _line.strip()
+            if not _line or _line.startswith("#") or "=" not in _line:
+                continue
+            _k, _, _v = _line.partition("=")
+            _k, _v = _k.strip(), _v.strip().strip("'").strip('"')
+            if _k and _k not in os.environ:
+                os.environ[_k] = _v
+
 from generator import (  # noqa: E402
     build_livre_deck,
     build_package_deck,
@@ -37,13 +53,23 @@ DEFAULT_MODELS = {
     "openrouter": "openai/gpt-4.1-mini",
 }
 
-NAV_ITEMS = [
-    ("gerador", "Gerador de Propostas", ":material/description:"),
-    ("geradas", "Propostas geradas", ":material/folder_open:"),
-    ("templates", "Modelos de template", ":material/dashboard:"),
-    ("historico", "Histórico", ":material/history:"),
-    ("config", "Configurações", ":material/settings:"),
-]
+# API OpenAI via .env (OPENAI_API_KEY) — sem chave no código
+OPENAI_API_KEY = (os.environ.get("OPENAI_API_KEY") or "").strip()
+FIXED_LLM_PROVIDER = "openai"
+FIXED_LLM_MODEL = DEFAULT_MODELS["openai"]
+FIXED_LLM_BASE_URL = None
+
+PROJECT_CODE_RE = re.compile(r"^[A-Z]{3}\d{3}-\d{2}$")
+TYPE_FILE_SUFFIX = {
+    "suporte": "Proposta-Suporte-v1",
+    "professional_service": "Professional-Service-v1",
+    "passlog": "PassLog-v1",
+    "discovery": "Discovery-v1",
+    "clarion": "Clarion-v1",
+    "livre": "Proposta-Tecnica-v1",
+}
+
+NAV_ITEMS = []  # navegação secundária removida do UI
 
 BRIEF_MAX_CHARS = 4000
 
@@ -51,36 +77,38 @@ FOOTER_NOTE = (
     "Seus dados são utilizados apenas para gerar a proposta e não são armazenados."
 )
 
+MOSTEN_LOGO = APP_DIR / "data" / "assets" / "logo-mosten.png"
+
 LIGHT_VARS = """
-  --mosten-purple: #6C5CE7;
-  --mosten-purple-dark: #5A4BD1;
-  --mosten-purple-soft: #F1EFFE;
-  --mosten-purple-mid: #DDD7FF;
-  --mosten-purple-hover: #EAE6FF;
-  --mosten-text: #1F2937;
-  --mosten-muted: #6B7280;
-  --mosten-border: #E9E7F3;
-  --mosten-bg: #F7F6FB;
+  --mosten-purple: #612CB5;
+  --mosten-purple-dark: #803DE0;
+  --mosten-purple-soft: #F7F4FC;
+  --mosten-purple-mid: #E4D9F7;
+  --mosten-purple-hover: #EFE8FA;
+  --mosten-text: #23231E;
+  --mosten-muted: #5C5C56;
+  --mosten-border: #E8E4F0;
+  --mosten-bg: #F7F4FC;
   --mosten-surface: #FFFFFF;
-  --mosten-input: #FAFAFC;
+  --mosten-input: #FFFFFF;
   --mosten-sidebar: #FFFFFF;
   --mosten-success: #16A34A;
-  --mosten-shadow: 0 2px 14px rgba(31, 41, 55, 0.04);
+  --mosten-shadow: 0 1px 2px rgba(35, 35, 30, 0.04), 0 8px 24px rgba(35, 35, 30, 0.04);
   --mosten-uploader-btn-bg: #FFFFFF;
 """
 
 DARK_VARS = """
-  --mosten-purple: #8B7CF0;
-  --mosten-purple-dark: #A99BFF;
-  --mosten-purple-soft: #2A2545;
-  --mosten-purple-mid: #4A3F7A;
-  --mosten-purple-hover: #342D55;
-  --mosten-text: #F3F4F6;
-  --mosten-muted: #9CA3AF;
+  --mosten-purple: #A99BFF;
+  --mosten-purple-dark: #CB6BF3;
+  --mosten-purple-soft: #1E1A2A;
+  --mosten-purple-mid: #3D3460;
+  --mosten-purple-hover: #2A2438;
+  --mosten-text: #F7F4FC;
+  --mosten-muted: #B0AAB8;
   --mosten-border: #2E2A40;
-  --mosten-bg: #12101A;
-  --mosten-surface: #1A1726;
-  --mosten-input: #15131F;
+  --mosten-bg: #14121C;
+  --mosten-surface: #1C1826;
+  --mosten-input: #17141F;
   --mosten-sidebar: #17141F;
   --mosten-success: #4ADE80;
   --mosten-shadow: 0 4px 22px rgba(0, 0, 0, 0.35);
@@ -88,19 +116,20 @@ DARK_VARS = """
 """
 
 
-def build_theme_css(theme: str, active_page: str) -> str:
-    """CSS do layout (sidebar + cards) com variáveis light/dark."""
+def build_theme_css(theme: str, active_page: str = "gerador") -> str:
+    """CSS do layout central (sem sidebar) com variáveis light/dark."""
     vars_block = DARK_VARS if theme == "Escuro" else LIGHT_VARS
+    _ = active_page  # reserved for future page-specific accents
     return f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap');
 
 :root {{
 {vars_block}
 }}
 
 html, body, .stApp {{
-  font-family: "Plus Jakarta Sans", sans-serif !important;
+  font-family: "Inter Tight", sans-serif !important;
   color: var(--mosten-text);
 }}
 
@@ -143,198 +172,54 @@ a[href*="share.streamlit"],
   pointer-events: none !important;
 }}
 
-/* —— Sidebar —— */
-[data-testid="stSidebar"] {{
-  background: var(--mosten-sidebar) !important;
-}}
-
-/* Largura fixa só quando aberta: colapsada precisa zerar min/max-width */
-[data-testid="stSidebar"][aria-expanded="true"] {{
-  width: 268px !important;
-  min-width: 268px !important;
-  max-width: 268px !important;
-  border-right: 1px solid var(--mosten-border) !important;
-}}
-
-[data-testid="stSidebar"][aria-expanded="false"] {{
-  min-width: 0 !important;
-  max-width: 0 !important;
-  border-right: none !important;
-}}
-
-[data-testid="stSidebarHeader"] {{
-  padding: 0.6rem 0.9rem 0 !important;
-  height: auto !important;
-}}
-
-[data-testid="stSidebarUserContent"] {{
-  padding: 0.2rem 0.85rem 1rem !important;
-}}
-
-[data-testid="stSidebarUserContent"] > div:first-child {{
-  min-height: calc(100vh - 4.5rem);
-}}
-
-[data-testid="stSidebarNav"] {{
+/* Sidebar oculta — layout central do gerador (sem rail lateral) */
+[data-testid="stSidebar"],
+section[data-testid="stSidebar"],
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stExpandSidebarButton"] {{
   display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  visibility: hidden !important;
 }}
 
-[data-testid="stElementContainer"]:has(.sidebar-bottom) {{
-  margin-top: auto;
-}}
-
-.sidebar-brand {{
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.35rem 0.4rem 0.9rem;
-}}
-.sidebar-brand svg {{
-  width: 26px;
-  height: 26px;
-}}
-.sidebar-brand span {{
-  font-weight: 800;
-  font-size: 0.98rem;
-  letter-spacing: 0.06em;
-  color: var(--mosten-text);
-}}
-
-.sidebar-tip {{
-  border-radius: 12px;
-  background: var(--mosten-purple-soft);
-  border: 1px solid var(--mosten-border);
-  padding: 0.7rem 0.8rem;
-  margin-bottom: 0.7rem;
-}}
-.sidebar-tip strong {{
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  color: var(--mosten-purple-dark);
-  margin-bottom: 0.25rem;
-}}
-.sidebar-tip strong svg {{
-  width: 13px;
-  height: 13px;
-}}
-.sidebar-tip p {{
-  margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.45;
-  color: var(--mosten-muted) !important;
-}}
-
-.sidebar-user {{
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--mosten-border);
-}}
-.sidebar-user .avatar {{
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  border-radius: 50%;
-  background: var(--mosten-purple-soft);
-  color: var(--mosten-purple-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.72rem;
-  font-weight: 700;
-}}
-.sidebar-user .who {{
-  flex: 1;
-  min-width: 0;
-}}
-.sidebar-user .who b {{
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--mosten-text);
-  line-height: 1.2;
-}}
-.sidebar-user .who small {{
-  font-size: 0.7rem;
-  color: var(--mosten-muted);
-}}
-.sidebar-user svg {{
-  width: 14px;
-  height: 14px;
-  color: var(--mosten-muted);
-}}
-
-/* Itens de navegação (botões) */
-[data-testid="stSidebar"] [data-testid^="stBaseButton"] {{
-  width: 100% !important;
-  justify-content: flex-start !important;
-  gap: 0.55rem !important;
-  background: transparent !important;
-  border: 1px solid transparent !important;
-  border-radius: 10px !important;
-  color: var(--mosten-muted) !important;
-  font-size: 0.85rem !important;
-  font-weight: 500 !important;
-  padding: 0.5rem 0.7rem !important;
-  box-shadow: none !important;
-  text-align: left !important;
-}}
-
-[data-testid="stSidebar"] [data-testid^="stBaseButton"]:hover {{
-  background: var(--mosten-purple-hover) !important;
-  color: var(--mosten-text) !important;
-}}
-
-.st-key-nav_{active_page} [data-testid^="stBaseButton"] {{
-  background: var(--mosten-purple-soft) !important;
-  color: var(--mosten-purple-dark) !important;
-  font-weight: 600 !important;
-}}
-
-[data-testid="stSidebar"] [data-testid="stElementContainer"] {{
-  margin-bottom: 0.15rem;
+[data-testid="stAppViewContainer"] > .main,
+.stApp [data-testid="stAppViewContainer"] {{
+  margin-left: 0 !important;
 }}
 
 /* —— Área principal —— */
 .stMainBlockContainer,
 .block-container {{
-  max-width: 1180px !important;
-  padding: 1.5rem 2rem 2.4rem !important;
+  max-width: 1080px !important;
+  padding: 1.5rem 1.75rem 2.5rem !important;
 }}
 
-.page-title {{
-  margin: 0;
-  font-size: 1.42rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--mosten-text) !important;
-}}
 .page-sub {{
-  margin: 0.25rem 0 0;
-  font-size: 0.85rem;
+  margin: 0.3rem 0 0;
+  font-size: 0.88rem;
   color: var(--mosten-muted) !important;
 }}
 
-/* Cards */
+/* Cards — superfície limpa; sub-blocos sem borda (anti nested-card) */
 div[class*="st-key-card_"] {{
-  background: var(--mosten-surface) !important;
-  border: 1px solid var(--mosten-border) !important;
-  border-radius: 16px !important;
-  box-shadow: var(--mosten-shadow) !important;
-  padding: 1.15rem 1.25rem 0.85rem !important;
-  margin-bottom: 1rem !important;
-}}
-
-div[class*="st-key-sub_"] {{
   background: var(--mosten-surface) !important;
   border: 1px solid var(--mosten-border) !important;
   border-radius: 12px !important;
   box-shadow: none !important;
-  padding: 0.85rem 1rem 0.6rem !important;
-  margin-bottom: 0.6rem !important;
+  padding: 1.25rem 1.35rem 1rem !important;
+  margin-bottom: 1.1rem !important;
+}}
+
+div[class*="st-key-sub_"] {{
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.85rem 0 0.35rem !important;
+  margin-bottom: 0.35rem !important;
+  border-top: 1px solid var(--mosten-border) !important;
 }}
 
 .card-head {{
@@ -458,7 +343,7 @@ label, .stMarkdown {{
 
 .stTextArea textarea:focus {{
   border-color: var(--mosten-purple) !important;
-  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.15) !important;
+  box-shadow: 0 0 0 2px rgba(97, 44, 181, 0.15) !important;
 }}
 
 /* Upload */
@@ -470,10 +355,11 @@ label, .stMarkdown {{
   background: var(--mosten-purple-soft) !important;
   border: 1.5px dashed var(--mosten-purple-mid) !important;
   border-radius: 12px !important;
-  padding: 0.75rem 0.9rem !important;
+  padding: 1rem 1rem 1.35rem !important;
   flex-direction: column !important;
   text-align: center !important;
-  gap: 0.35rem !important;
+  gap: 0.45rem !important;
+  align-items: center !important;
 }}
 
 [data-testid="stFileUploaderDropzone"]:hover {{
@@ -493,6 +379,11 @@ label, .stMarkdown {{
   font-size: 0.72rem !important;
 }}
 
+/* Logo — só dropzone com hover; esconde Browse files */
+.st-key-info_logo [data-testid="stFileUploader"] [data-testid^="stBaseButton"] {{
+  display: none !important;
+}}
+
 [data-testid="stFileUploader"] [data-testid^="stBaseButton"] {{
   background: var(--mosten-uploader-btn-bg) !important;
   color: var(--mosten-purple) !important;
@@ -502,31 +393,63 @@ label, .stMarkdown {{
   font-size: 0.78rem !important;
 }}
 
+.file-name-preview {{
+  margin: 0.35rem 0 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  background: var(--mosten-purple-soft);
+  border: 1px solid var(--mosten-border);
+  font-size: 0.82rem;
+  color: var(--mosten-text);
+}}
+.file-name-preview b {{
+  font-weight: 600;
+}}
+
 /* Tipo de proposta — cards de seleção */
 .st-key-proposal_type_id [data-testid="stRadioGroup"] {{
-  display: flex !important;
-  flex-wrap: wrap;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem !important;
+  align-items: stretch;
+}}
+
+@media (max-width: 900px) {{
+  .st-key-proposal_type_id [data-testid="stRadioGroup"] {{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }}
+}}
+
+@media (max-width: 560px) {{
+  .st-key-proposal_type_id [data-testid="stRadioGroup"] {{
+    grid-template-columns: 1fr;
+  }}
 }}
 
 .st-key-proposal_type_id label[data-baseweb="radio"] {{
-  flex: 1 1 220px;
   margin: 0 !important;
   padding: 0.9rem 1rem !important;
-  border: 1.5px solid var(--mosten-border);
-  border-radius: 14px;
+  min-height: 7.25rem;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid var(--mosten-border);
+  border-radius: 10px;
   background: var(--mosten-surface);
   transition: border-color 0.15s ease, background 0.15s ease;
 }}
 
 .st-key-proposal_type_id label[data-baseweb="radio"]:hover {{
   border-color: var(--mosten-purple-mid);
+  background: var(--mosten-purple-soft);
 }}
 
 .st-key-proposal_type_id label[data-baseweb="radio"]:has(input:checked) {{
   border-color: var(--mosten-purple);
   background: var(--mosten-purple-soft);
-  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.09);
+  box-shadow: none;
 }}
 
 .st-key-proposal_type_id label[data-baseweb="radio"] [data-testid="stMarkdownContainer"] p {{
@@ -535,38 +458,45 @@ label, .stMarkdown {{
   margin: 0 !important;
 }}
 
+.st-key-proposal_type_id label[data-baseweb="radio"] [data-testid="stCaptionContainer"] {{
+  flex: 1 1 auto;
+}}
+
 .st-key-proposal_type_id label[data-baseweb="radio"] [data-testid="stCaptionContainer"] p {{
   font-size: 0.76rem !important;
   font-weight: 400 !important;
   line-height: 1.4;
   margin-top: 0.3rem !important;
   color: var(--mosten-muted) !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }}
 
 /* Banner do modo + chip do template */
 .mode-banner {{
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 0.85rem;
   flex-wrap: wrap;
   margin: 0.85rem 0 0.35rem;
-  padding: 0.9rem 1rem;
-  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
   border: 1px solid var(--mosten-border);
-  background: var(--mosten-purple-soft);
+  background: var(--mosten-surface);
 }}
 .mode-banner-text {{
-  flex: 1 1 320px;
+  flex: 1 1 280px;
 }}
 .mode-banner-title {{
   display: flex;
   align-items: center;
   gap: 0.35rem;
   margin: 0 0 0.25rem;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--mosten-purple-dark) !important;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--mosten-text) !important;
 }}
 .mode-banner-title svg {{
   width: 14px;
@@ -574,7 +504,7 @@ label, .stMarkdown {{
 }}
 .mode-banner-text p:last-child {{
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   line-height: 1.45;
   color: var(--mosten-muted) !important;
 }}
@@ -584,28 +514,7 @@ label, .stMarkdown {{
   color: var(--mosten-muted) !important;
 }}
 .tpl-chip {{
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.85rem;
-  border-radius: 12px;
-  border: 1px solid var(--mosten-border);
-  background: var(--mosten-surface);
-}}
-.tpl-chip svg {{
-  width: 16px;
-  height: 16px;
-  color: var(--mosten-purple);
-}}
-.tpl-chip b {{
-  display: block;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--mosten-text);
-}}
-.tpl-chip small {{
-  font-size: 0.7rem;
-  color: var(--mosten-success);
+  display: none;
 }}
 
 /* Expanders */
@@ -631,19 +540,29 @@ label, .stMarkdown {{
   color: var(--mosten-purple) !important;
 }}
 
-/* Botão principal */
+/* Botão principal — marca Mosten, texto branco */
 [data-testid="stBaseButton-primary"] {{
-  background: linear-gradient(135deg, #6C5CE7 0%, #7B6BF0 100%) !important;
+  background: #612CB5 !important;
   border: none !important;
-  border-radius: 12px !important;
-  font-weight: 700 !important;
-  padding: 0.75rem 1rem !important;
-  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.28) !important;
-  color: #fff !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  padding: 0.8rem 1rem !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+}}
+
+[data-testid="stBaseButton-primary"] p,
+[data-testid="stBaseButton-primary"] span,
+[data-testid="stBaseButton-primary"] label,
+[data-testid="stBaseButton-primary"] div,
+[data-testid="stBaseButton-primary"] svg {{
+  color: #ffffff !important;
+  fill: #ffffff !important;
 }}
 
 [data-testid="stBaseButton-primary"]:hover {{
-  background: linear-gradient(135deg, #5A4BD1 0%, #6C5CE7 100%) !important;
+  background: #803DE0 !important;
+  color: #ffffff !important;
 }}
 
 .footer-note {{
@@ -651,6 +570,202 @@ label, .stMarkdown {{
   text-align: center;
   font-size: 0.76rem;
   color: var(--mosten-muted) !important;
+}}
+
+.gen-step {{
+  margin: 0.35rem 0 0.65rem;
+  text-align: center;
+}}
+.gen-step .card-title {{
+  display: inline;
+  font-size: 0.92rem;
+}}
+.gen-step .card-hint {{
+  display: block;
+  margin-top: 0.2rem;
+}}
+
+.checklist {{
+  margin: 0 0 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  background: var(--mosten-purple-soft);
+  border: 1px solid var(--mosten-border);
+  font-size: 0.8rem;
+  color: var(--mosten-muted);
+  line-height: 1.45;
+}}
+.checklist b {{
+  color: var(--mosten-text);
+  font-weight: 600;
+}}
+
+.logo-preview {{
+  margin-top: 0.55rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--mosten-border);
+  background: var(--mosten-input);
+  text-align: center;
+}}
+.logo-preview img {{
+  max-height: 72px;
+  max-width: 100%;
+  object-fit: contain;
+}}
+.logo-preview-label {{
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--mosten-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}}
+
+.type-summary {{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--mosten-border);
+  background: var(--mosten-purple-soft);
+  margin-bottom: 1rem;
+}}
+.type-summary b {{
+  display: block;
+  color: var(--mosten-purple-dark);
+  font-size: 0.92rem;
+}}
+.type-summary span {{
+  font-size: 0.78rem;
+  color: var(--mosten-muted);
+}}
+
+.result-success {{
+  padding: 0.35rem 0.15rem 0.5rem;
+}}
+.result-success h4 {{
+  margin: 0 0 0.35rem;
+  font-size: 1.02rem;
+  color: var(--mosten-text) !important;
+}}
+.result-success p {{
+  margin: 0 0 0.45rem;
+  font-size: 0.84rem;
+  color: var(--mosten-muted) !important;
+  line-height: 1.45;
+}}
+.result-meta {{
+  margin: 0.15rem 0;
+  font-size: 0.8rem;
+  color: var(--mosten-muted) !important;
+}}
+.result-meta b {{
+  color: var(--mosten-text);
+}}
+
+.brand-logo {{
+  display: block;
+  height: 28px;
+  width: auto;
+  margin-bottom: 0.55rem;
+}}
+.page-title {{
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--mosten-text) !important;
+}}
+
+/* Botão Alterar tipo — compacto */
+.st-key-alterar_tipo [data-testid^="stBaseButton"] {{
+  border-radius: 999px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  padding: 0.28rem 0.85rem !important;
+}}
+
+
+.wizard-stepper {{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin: 0.35rem 0 0.85rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--mosten-border);
+  border-radius: 12px;
+  background: var(--mosten-surface);
+}}
+.wizard-node {{
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  flex: 0 1 auto;
+}}
+.wizard-dot {{
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid var(--mosten-border);
+  background: var(--mosten-surface);
+  color: var(--mosten-muted);
+}}
+.wizard-node.active .wizard-dot {{
+  background: var(--mosten-purple);
+  border-color: var(--mosten-purple);
+  color: #fff;
+  transform: scale(1.08);
+}}
+.wizard-node.done .wizard-dot {{
+  background: var(--mosten-purple-soft);
+  border-color: var(--mosten-purple);
+  color: var(--mosten-purple);
+}}
+.wizard-meta b {{
+  display: block;
+  font-size: 0.86rem;
+  color: var(--mosten-text);
+  font-weight: 600;
+}}
+.wizard-meta span {{
+  display: block;
+  font-size: 0.72rem;
+  color: var(--mosten-muted);
+}}
+.wizard-line {{
+  flex: 1 1 24px;
+  height: 2px;
+  background: var(--mosten-border);
+  margin: 0 0.25rem;
+}}
+.wizard-line.filled {{
+  background: var(--mosten-purple);
+}}
+.wizard-panel-hidden {{
+  display: none !important;
+}}
+div[class*="st-key-wizard_panel_"] {{
+  background: var(--mosten-surface) !important;
+  border: 1px solid var(--mosten-border) !important;
+  border-radius: 12px !important;
+  padding: 1.15rem 1.25rem 0.9rem !important;
+  margin-bottom: 0.85rem !important;
+}}
+div[class*="st-key-wizard_panel_"].wizard-panel-hidden,
+div.wizard-panel-hidden[class*="st-key-wizard_panel_"] {{
+  display: none !important;
 }}
 
 /* Resultado — estado vazio */
@@ -803,9 +918,11 @@ label, .stMarkdown {{
 .mosten-loading-bar > i {{
   display: block;
   height: 100%;
+  width: 100%;
+  transform-origin: left center;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--mosten-purple), var(--mosten-purple-dark));
-  transition: width 0.35s ease;
+  background: var(--mosten-purple);
+  transition: transform 0.35s ease;
 }}
 
 [data-testid="stChatInput"] textarea,
@@ -824,7 +941,7 @@ label, .stMarkdown {{
 
 LOGO_SVG = """
 <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M4 26V6l12 12L28 6v20" stroke="#6C5CE7" stroke-width="3.4"
+  <path d="M4 26V6l12 12L28 6v20" stroke="#612CB5" stroke-width="3.4"
         stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 """
@@ -837,6 +954,17 @@ ICON_BRIEF = """
   <line x1="8" y1="17" x2="13" y2="17"/>
 </svg>
 """
+
+ICON_PAGE = ICON_BRIEF
+
+TYPE_ICONS = {
+    "professional_service": ":material/work:",
+    "suporte": ":material/support_agent:",
+    "passlog": ":material/badge:",
+    "discovery": ":material/travel_explore:",
+    "clarion": ":material/analytics:",
+    "livre": ":material/menu_book:",
+}
 
 ICON_RESULT = """
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -876,10 +1004,10 @@ ICON_CHEVRON = """
 
 RESULT_WAVE_SVG = """
 <svg class="result-wave" viewBox="0 0 400 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0 70 C 60 40, 110 95, 170 70 C 230 45, 280 90, 340 60 C 370 48, 390 55, 400 50 L400 120 L0 120 Z" fill="#EDE9FE"/>
+  <path d="M0 70 C 60 40, 110 95, 170 70 C 230 45, 280 90, 340 60 C 370 48, 390 55, 400 50 L400 120 L0 120 Z" fill="#F7F4FC"/>
   <path d="M0 85 C 70 55, 120 105, 190 80 C 250 58, 300 100, 360 75 C 380 68, 395 72, 400 70 L400 120 L0 120 Z" fill="#DDD6FE"/>
   <path d="M0 98 C 80 78, 140 110, 210 95 C 270 82, 320 108, 400 90 L400 120 L0 120 Z" fill="#C4B5FD" opacity="0.85"/>
-  <g fill="#A78BFA" opacity="0.9">
+  <g fill="#CB6BF3" opacity="0.9">
     <path d="M310 42 l2.2 5.5 5.8.4-4.4 3.8 1.4 5.6-5-3.1-5 3.1 1.4-5.6-4.4-3.8 5.8-.4z"/>
     <path d="M345 28 l1.5 3.6 3.8.3-2.9 2.5.9 3.7-3.3-2-3.3 2 .9-3.7-2.9-2.5 3.8-.3z"/>
     <path d="M280 55 l1.1 2.6 2.7.2-2.1 1.8.7 2.6-2.4-1.5-2.4 1.5.7-2.6-2.1-1.8 2.7-.2z"/>
@@ -926,14 +1054,85 @@ def _init_session_defaults() -> None:
         "brief_text": "",
         "transcription_text": "",
         "estimate_text": "",
+        "premissas_restricoes": "",
         "theme_mode": "Claro",
         "page": "gerador",
+        "wizard_step": 1,
+        "wizard_max": 1,
+        "tipo_collapsed": False,
+        "selected_proposal_type": "professional_service",
+        "last_result": None,
+        "open_result_modal": False,
         "_transcription_file_id": None,
         "_estimate_file_id": None,
+        "_brief_file_id": None,
+        "_premissas_file_id": None,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
+
+
+def _on_tipo_selected() -> None:
+    chosen = st.session_state.get("proposal_type_id")
+    if chosen:
+        st.session_state.selected_proposal_type = chosen
+
+
+def _skips_info_step(type_id: str | None) -> bool:
+    """Clarion is a static deck — no client/fields form."""
+    return (type_id or "") == "clarion"
+
+
+def _uses_brief_field(type_id: str | None) -> bool:
+    """Tipos que mostram Brief/contexto (com anexo MD/TXT)."""
+    return (type_id or "") in {"livre", "discovery", "passlog"}
+
+
+def _render_brief_context_field() -> str:
+    """Campo Brief/contexto com upload MD/TXT e preview editável."""
+    with st.container(border=True, key="sub_brief"):
+        _card_head(
+            "Brief / contexto",
+            "Resumo da proposta, objetivos e contexto comercial.",
+            icon_svg=ICON_BRIEF,
+        )
+        brief_file = st.file_uploader(
+            "Anexar brief (MD/TXT)",
+            type=["txt", "md"],
+            key="brief_uploader",
+            help="O texto do arquivo preenche o campo abaixo para revisão.",
+        )
+        _apply_upload_to_field(
+            uploaded=brief_file,
+            text_key="brief_text",
+            fingerprint_key="_brief_file_id",
+            label="Brief",
+            max_chars=BRIEF_MAX_CHARS,
+        )
+        if brief_file is not None:
+            st.caption(f"Anexo: **{brief_file.name}** — revise o texto abaixo.")
+        return st.text_area(
+            "Brief",
+            height=185,
+            max_chars=BRIEF_MAX_CHARS,
+            key="brief_text",
+            label_visibility="collapsed",
+            placeholder=(
+                "Exemplo:\n"
+                "Cliente: NPH/Unisanta\n"
+                "Contexto: operação cresceu; mais pessoas, sistemas "
+                "e decisões no dia a dia\n"
+                "Fricções: informação dispersa; decisões demoram; "
+                "dependência de poucas pessoas\n"
+                "Impacto: reação tardia, custo sobe, previsibilidade cai\n"
+                "Transformação desejada: operação conectada, visível "
+                "e pronta para crescer\n"
+                "Escopo/integrações (opcional): sistemas atuais, "
+                "APIs, restrições\n"
+                "Prazo/preço (se houver): a definir"
+            ),
+        )
 
 
 def _file_fingerprint(uploaded) -> str | None:
@@ -948,6 +1147,7 @@ def _apply_upload_to_field(
     text_key: str,
     fingerprint_key: str,
     label: str,
+    max_chars: int | None = None,
 ) -> None:
     """Extrai texto do upload e atualiza o session_state do textarea."""
     fp = _file_fingerprint(uploaded)
@@ -961,12 +1161,23 @@ def _apply_upload_to_field(
     except TextExtractError as exc:
         st.warning(f"{label}: {exc}")
         return
+    if max_chars is not None and len(extracted) > max_chars:
+        extracted = extracted[:max_chars]
+        st.warning(
+            f"{label}: texto truncado para {max_chars} caracteres "
+            f"(limite do campo)."
+        )
     st.session_state[text_key] = extracted
     st.session_state[fingerprint_key] = fp
     st.toast(f"{label}: texto extraído de {uploaded.name}")
 
 
-def _build_full_brief(brief: str, transcription: str, estimate: str) -> str:
+def _build_full_brief(
+    brief: str,
+    transcription: str,
+    estimate: str,
+    premissas: str = "",
+) -> str:
     parts: list[str] = []
     if brief.strip():
         parts.append(f"BRIEF:\n{brief.strip()}")
@@ -974,6 +1185,8 @@ def _build_full_brief(brief: str, transcription: str, estimate: str) -> str:
         parts.append(f"TRANSCRIÇÃO DA REUNIÃO:\n{transcription.strip()}")
     if estimate.strip():
         parts.append(f"ESTIMATIVA TÉCNICA:\n{estimate.strip()}")
+    if premissas.strip():
+        parts.append(f"PREMISSAS E RESTRIÇÕES:\n{premissas.strip()}")
     if st.session_state.messages:
         parts.append(
             "Complementos:\n"
@@ -1003,73 +1216,126 @@ def _card_head(
 
 
 def _page_header(title: str, subtitle: str, *, with_theme: bool = True) -> None:
-    title_col, theme_col = st.columns([3, 1], gap="medium")
-    with title_col:
-        st.markdown(
-            f'<p class="page-title">{title}</p>'
-            f'<p class="page-sub">{subtitle}</p>',
-            unsafe_allow_html=True,
+    _ = with_theme  # tema fixo claro
+    if MOSTEN_LOGO.is_file():
+        st.image(str(MOSTEN_LOGO), width=132)
+    st.markdown(
+        f'<p class="page-title">{title}</p>'
+        f'<p class="page-sub">{subtitle}</p>',
+        unsafe_allow_html=True,
+    )
+
+
+def _render_wizard_stepper(
+    current: int, max_reached: int, *, skip_info: bool = False
+) -> None:
+    steps = [
+        (1, "Tipo", "Escolha a oferta"),
+        (2, "Informações", "Cliente e campos"),
+        (3, "Gerar", "Revisar e baixar"),
+    ]
+    parts: list[str] = ['<div class="wizard-stepper">']
+    for i, (num, title, hint) in enumerate(steps):
+        if num < current:
+            state = "done"
+            mark = "✓"
+        elif num == current:
+            state = "active"
+            mark = str(num)
+        else:
+            state = "todo"
+            mark = str(num)
+        # Clarion: step 2 is not part of the path
+        if skip_info and num == 2:
+            if current >= 3:
+                state = "done"
+                mark = "✓"
+            else:
+                state = "todo"
+                mark = "—"
+            hint = "Não se aplica"
+        parts.append(
+            f'<div class="wizard-node {state}">'
+            f'<div class="wizard-dot">{mark}</div>'
+            f'<div class="wizard-meta"><b>{title}</b><span>{hint}</span></div>'
+            f"</div>"
         )
-    if not with_theme:
-        return
-    with theme_col:
-        with st.container(border=True, key="card_tema"):
-            st.segmented_control(
-                "Tema",
-                options=["Claro", "Escuro"],
-                key="theme_mode",
-                format_func=lambda v: (
-                    f":material/light_mode: {v}"
-                    if v == "Claro"
-                    else f":material/dark_mode: {v}"
-                ),
-            )
+        if i < len(steps) - 1:
+            if skip_info and num == 1:
+                line = "filled" if current >= 3 else ""
+            else:
+                line = "filled" if num < current else ""
+            parts.append(f'<div class="wizard-line {line}"></div>')
+    parts.append("</div>")
+    st.markdown("".join(parts), unsafe_allow_html=True)
+
+    b1, b2, b3 = st.columns(3, gap="small")
+    for col, num, title in (
+        (b1, 1, "1 · Tipo"),
+        (b2, 2, "2 · Informações"),
+        (b3, 3, "3 · Gerar"),
+    ):
+        with col:
+            if skip_info and num == 2:
+                disabled = True
+            else:
+                disabled = num > max_reached
+            if st.button(
+                title,
+                key=f"wizard_jump_{num}",
+                use_container_width=True,
+                disabled=disabled,
+                type="primary" if num == current else "secondary",
+            ):
+                st.session_state.wizard_step = num
+                st.rerun()
+
+
+def _wizard_nav(
+    *, step: int, can_advance: bool = True, skip_info: bool = False
+) -> None:
+    back, _, nxt = st.columns([1, 2, 1], gap="medium")
+    with back:
+        if step > 1:
+            if st.button(
+                "Voltar",
+                key=f"wizard_back_{step}",
+                use_container_width=True,
+                icon=":material/arrow_back:",
+            ):
+                if skip_info and step == 3:
+                    st.session_state.wizard_step = 1
+                else:
+                    st.session_state.wizard_step = step - 1
+                st.rerun()
+    with nxt:
+        if step < 3:
+            if st.button(
+                "Avançar",
+                key=f"wizard_next_{step}",
+                use_container_width=True,
+                type="primary",
+                icon=":material/arrow_forward:",
+                disabled=not can_advance,
+            ):
+                if skip_info and step == 1:
+                    next_step = 3
+                else:
+                    next_step = step + 1
+                st.session_state.wizard_step = next_step
+                st.session_state.wizard_max = max(
+                    int(st.session_state.get("wizard_max") or 1), next_step
+                )
+                st.rerun()
 
 
 def _footer_note() -> None:
     st.markdown(f'<p class="footer-note">{FOOTER_NOTE}</p>', unsafe_allow_html=True)
 
 
-def _sidebar() -> str:
-    """Marca, navegação, dica e usuário. Retorna a página ativa."""
-    user_name = os.environ.get("APP_USER_NAME", "Matheus Reis").strip() or "Usuário"
-    user_org = os.environ.get("APP_USER_ORG", "HNS - MOSTEN").strip()
-    initials = "".join(p[0] for p in user_name.split()[:2]).upper() or "M"
-
-    with st.sidebar:
-        st.markdown(
-            f'<div class="sidebar-brand">{LOGO_SVG}<span>MOSTEN</span></div>',
-            unsafe_allow_html=True,
-        )
-        for page_id, page_label, page_icon in NAV_ITEMS:
-            if st.button(
-                page_label,
-                key=f"nav_{page_id}",
-                icon=page_icon,
-                type="tertiary",
-                use_container_width=True,
-            ):
-                st.session_state.page = page_id
-                st.rerun()
-
-        st.markdown(
-            '<div class="sidebar-bottom">'
-            '<div class="sidebar-tip">'
-            f"<strong>{ICON_SPARK} Dica rápida</strong>"
-            "<p>Use o modo Livre para personalizar cada seção. "
-            "Seu template mestre garante consistência.</p>"
-            "</div>"
-            '<div class="sidebar-user">'
-            f'<div class="avatar">{initials}</div>'
-            f'<div class="who"><b>{user_name}</b><small>{user_org}</small></div>'
-            f"{ICON_CHEVRON}"
-            "</div>"
-            "</div>",
-            unsafe_allow_html=True,
-        )
-
-    return st.session_state.get("page", "gerador")
-
+def _type_label(type_id: str, label: str) -> str:
+    icon = TYPE_ICONS.get(type_id, ":material/description:")
+    return f"{icon} {label}"
 
 class FullscreenLoading:
     """Overlay de tela cheia com spinner + porcentagem."""
@@ -1088,7 +1354,7 @@ class FullscreenLoading:
     <div class="mosten-loading-pct">{pct}%</div>
     <p class="mosten-loading-title">{self.title}</p>
     <p class="mosten-loading-msg">{message}</p>
-    <div class="mosten-loading-bar"><i style="width:{pct}%"></i></div>
+    <div class="mosten-loading-bar"><i style="transform:scaleX({pct / 100})"></i></div>
   </div>
 </div>
 """,
@@ -1102,11 +1368,10 @@ class FullscreenLoading:
 def _result_empty_state() -> str:
     return (
         '<div class="result-empty">'
-        f'<div class="result-empty-icon">{ICON_RESULT}</div>'
-        "<h4>Pronto para gerar</h4>"
-        "<p>Preencha os campos ao lado e clique em gerar "
-        "para criar a proposta.</p>"
-        f"{RESULT_WAVE_SVG}"
+        f'<div class="result-empty-icon">{ICON_BRIEF}</div>'
+        "<h4>Aguardando geração</h4>"
+        "<p>Quando a proposta estiver pronta, "
+        "o download aparece aqui.</p>"
         "</div>"
     )
 
@@ -1129,56 +1394,113 @@ def _resolve_logo_path(logo_file, client_name: str) -> Path | None:
     return None
 
 
+def _format_project_code(raw: str) -> str:
+    """Normaliza para AAA999-99 (3 letras + 3 dígitos + hífen + 2 dígitos)."""
+    chars = re.sub(r"[^A-Za-z0-9]", "", raw or "").upper()
+    letters = "".join(c for c in chars if c.isalpha())[:3]
+    digits = "".join(c for c in chars if c.isdigit())
+    d1 = digits[:3]
+    d2 = digits[3:5]
+    out = letters + d1
+    if d2 or len(digits) > 3:
+        out += "-" + d2
+    return out
+
+
+def _on_project_code_change() -> None:
+    raw = st.session_state.get("info_code") or ""
+    st.session_state.info_code = _format_project_code(raw)
+
+
+def _format_money_br(raw: str) -> str:
+    """Máscara monetária BR a partir só de dígitos (centavos)."""
+    digits = re.sub(r"\D", "", raw or "")
+    if not digits:
+        return ""
+    digits = digits[:12]
+    value = int(digits)
+    reais = value // 100
+    cents = value % 100
+    reais_fmt = f"{reais:,}".replace(",", ".")
+    return f"R$ {reais_fmt},{cents:02d}"
+
+
+def _format_weeks_only(raw: str) -> str:
+    """Só dígitos — tempo em semanas."""
+    digits = re.sub(r"\D", "", raw or "")[:3]
+    if not digits:
+        return ""
+    return str(int(digits))
+
+
+def _on_money_field_change(key: str) -> None:
+    st.session_state[key] = _format_money_br(st.session_state.get(key) or "")
+
+
+def _on_weeks_field_change(key: str) -> None:
+    st.session_state[key] = _format_weeks_only(st.session_state.get(key) or "")
+
+
+def _is_valid_project_code(code: str) -> bool:
+    return bool(PROJECT_CODE_RE.match((code or "").strip().upper()))
+
+
+def _proposal_file_stem(project_code: str, type_id: str) -> str:
+    code = (project_code or "").strip().upper() or "XXX000-00"
+    suffix = TYPE_FILE_SUFFIX.get(type_id) or f"{slugify(type_id) or 'Proposta'}-v1"
+    return f"{code}-{suffix}"
+
+
 def _build_output_path(
     *,
-    output_name: str,
     project_code: str,
-    client_name: str,
+    type_id: str = "",
+    output_name: str = "",
+    client_name: str = "",
     type_slug: str = "",
 ) -> Path:
-    code = project_code.strip() or "PROPOSTA"
-    suffix = f" - {type_slug}" if type_slug else ""
-    name = output_name.strip() or (
-        f"{code}{suffix} - {slugify(client_name or 'cliente')} - "
-        f"{date.today().isoformat()}.pptx"
-    )
+    if output_name.strip():
+        name = output_name.strip()
+    else:
+        tid = type_id or type_slug or "proposta"
+        name = _proposal_file_stem(project_code, tid)
     if not name.lower().endswith(".pptx"):
         name += ".pptx"
     return P.output_dir() / name
 
 
-def _show_download(
+def _result_success_html(
     *,
-    result_box,
-    download_box,
-    json_box,
-    out_path: Path,
-    values: dict,
-    meta: dict | None = None,
-) -> None:
-    src = (meta or {}).get("template")
-    extra = f"\n\nTemplate: `{src}`" if src else ""
-    result_box.success(f"Proposta gerada: `{out_path.name}`{extra}")
-    download_box.download_button(
-        label="Baixar PPTX",
-        data=out_path.read_bytes(),
-        file_name=out_path.name,
-        mime=(
-            "application/vnd.openxmlformats-officedocument"
-            ".presentationml.presentation"
-        ),
-        use_container_width=True,
+    file_name: str,
+    client: str,
+    code: str,
+    type_label: str,
+    size_label: str,
+) -> str:
+    client_disp = client.strip() or "—"
+    code_disp = code.strip() or "—"
+    return (
+        '<div class="result-success">'
+        f'<div class="result-empty-icon" style="margin:0 auto 0.85rem">'
+        f"{ICON_RESULT}</div>"
+        "<h4>Proposta gerada</h4>"
+        f"<p><b>{file_name}</b></p>"
+        f'<p class="result-meta">Cliente: <b>{client_disp}</b></p>'
+        f'<p class="result-meta">Código: <b>{code_disp}</b></p>'
+        f'<p class="result-meta">Tipo: <b>{type_label}</b></p>'
+        f'<p class="result-meta">Tamanho: <b>{size_label}</b></p>'
+        "</div>"
     )
-    with json_box.expander("JSON dos valores (debug)"):
-        st.json(values)
 
+
+def _persist_values_json(out_path: Path, values: dict, meta: dict | None) -> None:
     payload = {
-        "client": meta.get("client") if meta else None,
-        "code": meta.get("code") if meta else None,
-        "type": meta.get("type") if meta else None,
-        "template": meta.get("template") if meta else None,
-        "provider": meta.get("provider") if meta else None,
-        "model": meta.get("model") if meta else None,
+        "client": (meta or {}).get("client"),
+        "code": (meta or {}).get("code"),
+        "type": (meta or {}).get("type"),
+        "template": (meta or {}).get("template"),
+        "provider": (meta or {}).get("provider"),
+        "model": (meta or {}).get("model"),
         "values": values,
     }
     values_path = out_path.with_suffix(".values.json")
@@ -1186,6 +1508,186 @@ def _show_download(
         json.dumps(payload, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+
+
+def _show_download(
+    *,
+    result_box,
+    download_box,
+    out_path: Path,
+    values: dict,
+    meta: dict | None = None,
+) -> None:
+    meta = meta or {}
+    type_label = meta.get("type_label") or meta.get("type") or "—"
+    size_label = _human_size(out_path.stat().st_size)
+    payload_bytes = out_path.read_bytes()
+
+    st.session_state.last_result = {
+        "file_name": out_path.name,
+        "path": str(out_path),
+        "client": meta.get("client") or "",
+        "code": meta.get("code") or "",
+        "type": meta.get("type"),
+        "type_label": type_label,
+        "template": meta.get("template"),
+        "size_label": size_label,
+        "values": values,
+    }
+
+    result_box.markdown(
+        _result_success_html(
+            file_name=out_path.name,
+            client=str(meta.get("client") or ""),
+            code=str(meta.get("code") or ""),
+            type_label=str(type_label),
+            size_label=size_label,
+        ),
+        unsafe_allow_html=True,
+    )
+    with download_box.container():
+        st.download_button(
+            label="Baixar PPTX",
+            data=payload_bytes,
+            file_name=out_path.name,
+            mime=(
+                "application/vnd.openxmlformats-officedocument"
+                ".presentationml.presentation"
+            ),
+            use_container_width=True,
+            icon=":material/download:",
+            key="download_result_card",
+        )
+
+    _persist_values_json(out_path, values, meta)
+    _proposal_ready_dialog()
+
+
+@st.dialog("Proposta gerada", width="large")
+def _proposal_ready_dialog() -> None:
+    data = st.session_state.get("last_result") or {}
+    out_name = data.get("file_name") or "proposta.pptx"
+    st.markdown(
+        f"**Arquivo:** `{out_name}`  \n"
+        f"**Cliente:** {data.get('client') or '—'}  \n"
+        f"**Código:** {data.get('code') or '—'}  \n"
+        f"**Tipo:** {data.get('type_label') or '—'}  \n"
+        f"**Tamanho:** {data.get('size_label') or '—'}"
+    )
+    path_str = data.get("path") or ""
+    path = Path(path_str) if path_str else None
+    if path and path.is_file():
+        st.download_button(
+            label="Baixar PPTX",
+            data=path.read_bytes(),
+            file_name=out_name,
+            mime=(
+                "application/vnd.openxmlformats-officedocument"
+                ".presentationml.presentation"
+            ),
+            use_container_width=True,
+            type="primary",
+            icon=":material/download:",
+            key="download_modal_pptx",
+        )
+    if data.get("template"):
+        st.caption(f"Template: `{Path(str(data['template'])).name}`")
+
+
+def _parse_premissas_restricoes(text: str) -> dict[str, str]:
+    """
+    Converte texto livre em tokens {PREMISSA_n_ITEM}, {RESTRICAO_n_ITEM},
+    {RESTR_n_DESC}. Aceita blocos 'Premissas:' / 'Restrições:' ou lista única.
+    """
+    raw = (text or "").strip()
+    if not raw:
+        return {}
+
+    lower = raw.lower()
+    prem_idx = -1
+    rest_idx = -1
+    for marker in ("premissas:", "premissa:", "premissas\n", "premissa\n"):
+        i = lower.find(marker)
+        if i >= 0:
+            prem_idx = i
+            break
+    for marker in (
+        "restrições:",
+        "restricoes:",
+        "restrição:",
+        "restricao:",
+        "restrições\n",
+        "restricoes\n",
+    ):
+        i = lower.find(marker)
+        if i >= 0:
+            rest_idx = i
+            break
+
+    def _items(block: str) -> list[str]:
+        lines: list[str] = []
+        headers = {
+            "premissas",
+            "premissa",
+            "restrições",
+            "restricoes",
+            "restrição",
+            "restricao",
+        }
+        for line in block.splitlines():
+            cleaned = re.sub(r"^[\s\-•*–—\d.)]+", "", line).strip()
+            if not cleaned:
+                continue
+            if cleaned.lower().rstrip(":").strip() in headers:
+                continue
+            lines.append(cleaned)
+        if not lines and block.strip():
+            parts = re.split(r"[;\n]+", block)
+            lines = [
+                p.strip()
+                for p in parts
+                if p.strip() and p.strip().lower().rstrip(":").strip() not in headers
+            ]
+        return lines
+
+    if prem_idx >= 0 or rest_idx >= 0:
+        if prem_idx >= 0 and rest_idx >= 0:
+            if prem_idx < rest_idx:
+                prem_block = raw[prem_idx:rest_idx]
+                rest_block = raw[rest_idx:]
+            else:
+                rest_block = raw[rest_idx:prem_idx]
+                prem_block = raw[prem_idx:]
+        elif prem_idx >= 0:
+            prem_block = raw[prem_idx:]
+            rest_block = ""
+        else:
+            prem_block = ""
+            rest_block = raw[rest_idx:]
+        premissas = _items(prem_block)
+        restricoes = _items(rest_block)
+    else:
+        premissas = _items(raw)
+        restricoes = []
+
+    out: dict[str, str] = {}
+    for i, item in enumerate(premissas[:7], start=1):
+        out[f"{{PREMISSA_{i}_ITEM}}"] = item
+    for i, item in enumerate(restricoes[:5], start=1):
+        out[f"{{RESTRICAO_{i}_ITEM}}"] = item
+        out[f"{{RESTR_{i}_DESC}}"] = item
+    return out
+
+
+def _apply_premissas_to_values(
+    values: dict[str, str], premissas_text: str
+) -> dict[str, str]:
+    parsed = _parse_premissas_restricoes(premissas_text)
+    if not parsed:
+        return values
+    merged = dict(values)
+    merged.update(parsed)
+    return merged
 
 
 def _human_size(num_bytes: int) -> str:
@@ -1219,77 +1721,13 @@ def _template_summary(path_str: str, mtime: float) -> dict:
 def render_generator() -> None:
     _page_header(
         "Gerador de Propostas",
-        "Crie propostas profissionais com agilidade e consistência.",
+        "Monte propostas comerciais Mosten a partir do template oficial.",
     )
 
-    # —— 1. Dados da proposta ——
-    with st.container(border=True, key="card_dados"):
-        _card_head(
-            "Dados da proposta",
-            "Informações básicas usadas em todos os tipos de proposta.",
-            step=1,
-        )
-        g1, g2, g3, g4 = st.columns(4, gap="medium")
-        with g1:
-            client_name = st.text_input("Cliente", placeholder="NPH / Unisanta")
-        with g2:
-            project_code = st.text_input(
-                "Código da proposta", placeholder="UNS001-26"
-            )
-        with g3:
-            output_name = st.text_input(
-                "Nome do arquivo", value="", placeholder="auto"
-            )
-        with g4:
-            logo_file = st.file_uploader(
-                "Logo do cliente (PNG/JPG)",
-                type=["png", "jpg", "jpeg"],
-            )
-
-    # —— Configuração LLM ——
-    provider = "openai"
-    model = DEFAULT_MODELS["openai"]
-    api_key = ""
-    base_url = None
-    with st.expander("Configuração LLM (modo Livre)", icon=":material/tune:"):
-        st.caption(
-            "Usado apenas no modo Livre. Pacotes como Professional Service "
-            "não precisam de LLM."
-        )
-        l1, l2, l3, l4 = st.columns(4, gap="medium")
-        with l1:
-            provider = st.selectbox(
-                "Provider",
-                options=["openai", "anthropic", "openrouter"],
-                format_func=lambda x: {
-                    "openai": "OpenAI",
-                    "anthropic": "Anthropic",
-                    "openrouter": "OpenRouter",
-                }[x],
-            )
-        with l2:
-            api_key = st.text_input(
-                "API Key",
-                type="password",
-                help="A chave fica só nesta sessão. Não é salva em disco.",
-                placeholder="sk-...",
-            )
-        with l3:
-            model = st.text_input(
-                "Modelo",
-                value=DEFAULT_MODELS[provider],
-                help="Prefira modelos baratos (mini/haiku/flash).",
-            )
-        with l4:
-            if provider == "openrouter":
-                base_url = st.text_input(
-                    "Base URL", value="https://openrouter.ai/api/v1"
-                )
-            elif provider == "openai":
-                custom = st.text_input("Base URL (opcional)", value="")
-                base_url = custom.strip() or None
-            else:
-                st.caption("Base URL não necessária para Anthropic.")
+    if st.session_state.pop("open_result_modal", False) and st.session_state.get(
+        "last_result"
+    ):
+        _proposal_ready_dialog()
 
     proposal_types = list_proposal_types()
     ordered = sorted(
@@ -1302,76 +1740,209 @@ def render_generator() -> None:
     pkg_by_id = {t["id"]: t for t in ordered}
     master_path = P.master_template_path()
 
-    # —— 2. Tipo de proposta ——
-    with st.container(border=True, key="card_tipo"):
+    persisted = st.session_state.get("selected_proposal_type")
+    if persisted not in type_ids:
+        persisted = (
+            "professional_service"
+            if "professional_service" in type_ids
+            else type_ids[0]
+        )
+        st.session_state.selected_proposal_type = persisted
+
+    step = int(st.session_state.get("wizard_step") or 1)
+    step = max(1, min(3, step))
+    skip_info = _skips_info_step(
+        st.session_state.get("selected_proposal_type")
+        or st.session_state.get("proposal_type_id")
+    )
+    if skip_info and step == 2:
+        step = 3
+    st.session_state.wizard_step = step
+    max_reached = max(int(st.session_state.get("wizard_max") or 1), step)
+    st.session_state.wizard_max = max_reached
+
+    _render_wizard_stepper(step, max_reached, skip_info=skip_info)
+
+    # CSS: esconde painéis inativos sem desmontar widgets
+    hide_rules = []
+    for n in (1, 2, 3):
+        if n != step:
+            hide_rules.append(
+                f'div[class*="st-key-wizard_panel_{n}"] {{ display: none !important; }}'
+            )
+    if hide_rules:
+        st.markdown("<style>" + "".join(hide_rules) + "</style>", unsafe_allow_html=True)
+
+    provider = FIXED_LLM_PROVIDER
+    model = FIXED_LLM_MODEL
+    api_key = OPENAI_API_KEY
+    base_url = FIXED_LLM_BASE_URL
+
+    field_values: dict[str, str] = {}
+    brief = transcription = estimate = ""
+    client_name = st.session_state.get("info_client") or ""
+    project_code = st.session_state.get("info_code") or ""
+    logo_file = None
+    premissas_text = st.session_state.get("premissas_restricoes") or ""
+
+    # —— Painel 1: Tipo ——
+    with st.container(border=True, key="wizard_panel_1"):
         _card_head(
             "Tipo de proposta",
-            "Escolha o tipo de proposta que deseja gerar.",
-            step=2,
+            "Escolha a oferta e avance para preencher os dados.",
+            step=1,
         )
-        selected_id = st.radio(
+        if st.session_state.get("proposal_type_id") not in type_ids:
+            st.session_state.proposal_type_id = (
+                st.session_state.selected_proposal_type
+            )
+        chosen = st.radio(
             "Tipo de proposta",
             options=type_ids,
-            index=type_ids.index("livre") if "livre" in type_ids else 0,
-            format_func=lambda i: label_by_id[i],
+            format_func=lambda i: _type_label(i, label_by_id[i]),
             captions=[desc_by_id[i] for i in type_ids],
             horizontal=True,
             key="proposal_type_id",
             label_visibility="collapsed",
+            on_change=_on_tipo_selected,
         )
-        pkg = pkg_by_id[selected_id]
-        mode = pkg.get("mode") or "llm_full"
-        label = label_by_id[selected_id]
-
-        if mode == "package":
-            banner_text = (
-                "Mantém só os slides da seção no mestre; textos fixos não mudam "
-                "e apenas <code>{TOKENS}</code> e a tabela de investimento são "
-                "preenchidos."
-            )
+        st.session_state.selected_proposal_type = chosen
+        selected_id = chosen
+        pkg_preview = pkg_by_id[selected_id]
+        mode_preview = pkg_preview.get("mode") or "llm_full"
+        label_preview = label_by_id[selected_id]
+        if mode_preview == "package":
+            if selected_id == "clarion":
+                banner_text = (
+                    f"Gera a oferta <b>{label_preview}</b> com o deck "
+                    "oficial estático. Sem formulário — avance direto "
+                    "para gerar o PPTX."
+                )
+            else:
+                banner_text = (
+                    f"Gera a oferta <b>{label_preview}</b> com os slides "
+                    "oficiais do template. Você preenche só os campos "
+                    "comerciais; o restante do layout permanece."
+                )
         else:
             banner_text = (
-                f"Utiliza o slide mestre (<code>{master_path.name}</code>): "
-                "somente os tokens <code>{NOME}</code> são preenchidos; "
-                "texto cru do template permanece."
+                "Gera a proposta completa a partir do brief. "
+                "O LLM escreve os textos nos espaços do template — "
+                "sem redesenhar slides."
             )
         st.markdown(
             '<div class="mode-banner">'
             '<div class="mode-banner-text">'
-            f'<p class="mode-banner-title">{ICON_INFO} Sobre o modo {label}</p>'
+            f'<p class="mode-banner-title">{ICON_INFO} {label_preview}</p>'
             f"<p>{banner_text}</p>"
-            "</div>"
-            '<div class="tpl-chip">'
-            f"{ICON_FILE}"
-            f"<div><b>{master_path.name}</b><small>Template ativo</small></div>"
             "</div>"
             "</div>",
             unsafe_allow_html=True,
         )
-
-    # —— 3. Informações da proposta + Resultado ——
-    field_values: dict[str, str] = {}
-    brief = transcription = estimate = ""
-
-    left, right = st.columns([1.45, 1], gap="medium")
-
-    with left:
-        with st.container(border=True, key="card_info"):
-            _card_head(
-                "Informações da proposta",
-                "Preencha os campos para gerar a proposta.",
-                step=3,
+        if step == 1:
+            _wizard_nav(
+                step=1,
+                can_advance=True,
+                skip_info=_skips_info_step(selected_id),
             )
 
-            if mode == "package":
+    selected_id = st.session_state.selected_proposal_type
+    if selected_id not in pkg_by_id:
+        selected_id = type_ids[0]
+        st.session_state.selected_proposal_type = selected_id
+    pkg = pkg_by_id[selected_id]
+    mode = pkg.get("mode") or "llm_full"
+    label = label_by_id[selected_id]
+
+    # —— Painel 2: Informações ——
+    with st.container(border=True, key="wizard_panel_2"):
+        _card_head(
+            "Informações da proposta",
+            "Cliente, código e campos da oferta selecionada.",
+            step=2,
+        )
+        g1, g2 = st.columns(2, gap="medium")
+        with g1:
+            client_name = st.text_input(
+                "Cliente", placeholder="NPH / Unisanta", key="info_client"
+            )
+        with g2:
+            project_code = st.text_input(
+                "Código da proposta",
+                placeholder="BUI001-26",
+                key="info_code",
+                max_chars=9,
+                on_change=_on_project_code_change,
+                help="Formato: 3 letras + 3 números + hífen + 2 números (ex.: BUI001-26).",
+            )
+        logo_file = st.file_uploader(
+            "Logo do cliente (PNG/JPG)",
+            type=["png", "jpg", "jpeg"],
+            key="info_logo",
+        )
+        stem_preview = _proposal_file_stem(project_code, selected_id)
+        st.markdown(
+            f'<p class="file-name-preview">Arquivo gerado: '
+            f"<b>{stem_preview}.pptx</b></p>",
+            unsafe_allow_html=True,
+        )
+        logo_preview_slot = st.empty()
+        if logo_file is not None:
+            with logo_preview_slot.container():
+                st.markdown(
+                    '<div class="logo-preview">'
+                    '<p class="logo-preview-label">Preview do logo</p>'
+                    "</div>",
+                    unsafe_allow_html=True,
+                )
+                st.image(logo_file, width=220)
+        else:
+            logo_preview_slot.caption(
+                "Envie um PNG ou JPG para visualizar o logo do cliente."
+            )
+
+        premissas_file = st.file_uploader(
+            "Anexar premissas e restrições (MD/TXT)",
+            type=["txt", "md"],
+            key="premissas_uploader",
+            help="O texto do arquivo preenche o campo abaixo para revisão.",
+        )
+        _apply_upload_to_field(
+            uploaded=premissas_file,
+            text_key="premissas_restricoes",
+            fingerprint_key="_premissas_file_id",
+            label="Premissas e restrições",
+        )
+        if premissas_file is not None:
+            st.caption(f"Anexo: **{premissas_file.name}** — revise o texto abaixo.")
+        premissas_text = st.text_area(
+            "Premissas e restrições",
+            height=120,
+            key="premissas_restricoes",
+            placeholder=(
+                "Premissas:\n"
+                "- Acesso aos sistemas legado disponível\n"
+                "- Stakeholders alinhados no kick-off\n"
+                "Restrições:\n"
+                "- Sem integração em tempo real\n"
+                "- Infraestrutura cloud sob responsabilidade do cliente"
+            ),
+            help=(
+                "Itens explícitos do projeto. Use blocos Premissas: e "
+                "Restrições: (um item por linha). Ou anexe um .md/.txt."
+            ),
+        )
+
+        if mode == "package":
+            pkg_fields = pkg.get("fields") or []
+            if pkg_fields:
                 with st.container(border=True, key="sub_pkg"):
                     _card_head(
-                        "Insumos do pacote",
-                        "Campos variáveis da seção. Textos fixos do mestre "
-                        "não mudam.",
+                        "Campos da oferta",
+                        "Valores que entram na proposta. O layout do "
+                        "template oficial não muda.",
                         icon_svg=ICON_BRIEF,
                     )
-                    pkg_fields = pkg.get("fields") or []
                     rows = [
                         pkg_fields[i : i + 2]
                         for i in range(0, len(pkg_fields), 2)
@@ -1392,135 +1963,199 @@ def render_generator() -> None:
                                         placeholder=ph,
                                         height=100,
                                     )
+                                elif fid in {"total", "valor_suporte"}:
+                                    field_values[fid] = st.text_input(
+                                        label_f,
+                                        key=key,
+                                        placeholder=ph or "R$ 0,00",
+                                        on_change=_on_money_field_change,
+                                        args=(key,),
+                                    )
+                                elif fid in {"tempo_execucao"}:
+                                    field_values[fid] = st.text_input(
+                                        label_f,
+                                        key=key,
+                                        placeholder=ph or "8",
+                                        on_change=_on_weeks_field_change,
+                                        args=(key,),
+                                    )
                                 else:
                                     field_values[fid] = st.text_input(
                                         label_f, key=key, placeholder=ph
                                     )
-            else:
-                with st.container(border=True, key="sub_brief"):
-                    _card_head(
-                        "Brief / contexto",
-                        "Resumo da proposta, objetivos e contexto comercial.",
-                        icon_svg=ICON_BRIEF,
-                    )
-                    brief = st.text_area(
-                        "Brief",
-                        height=185,
-                        max_chars=BRIEF_MAX_CHARS,
-                        key="brief_text",
-                        label_visibility="collapsed",
-                        placeholder=(
-                            "Exemplo:\n"
-                            "Cliente: NPH/Unisanta\n"
-                            "Contexto: operação cresceu; mais pessoas, sistemas "
-                            "e decisões no dia a dia\n"
-                            "Fricções: informação dispersa; decisões demoram; "
-                            "dependência de poucas pessoas\n"
-                            "Impacto: reação tardia, custo sobe, previsibilidade cai\n"
-                            "Transformação desejada: operação conectada, visível "
-                            "e pronta para crescer\n"
-                            "Escopo/integrações (opcional): sistemas atuais, "
-                            "APIs, restrições\n"
-                            "Prazo/preço (se houver): a definir"
-                        ),
-                    )
+            if _uses_brief_field(selected_id):
+                brief = _render_brief_context_field()
+                field_values["brief"] = (brief or "").strip()
+        else:
+            brief = _render_brief_context_field()
 
-                with st.expander(
-                    "Transcrição da reunião", icon=":material/mic:"
-                ):
-                    st.caption(
-                        "Cole a transcrição completa da reunião ou anexe "
-                        "TXT, MD, VTT, SRT ou PDF."
-                    )
-                    transcription_file = st.file_uploader(
-                        "Anexar transcrição",
-                        type=["txt", "md", "vtt", "srt", "pdf"],
-                        key="transcription_uploader",
-                        help="O texto extraído preenche o campo abaixo.",
-                    )
-                    _apply_upload_to_field(
-                        uploaded=transcription_file,
-                        text_key="transcription_text",
-                        fingerprint_key="_transcription_file_id",
-                        label="Transcrição",
-                    )
-                    transcription = st.text_area(
-                        "Transcrição",
-                        height=200,
-                        key="transcription_text",
-                        label_visibility="collapsed",
-                        placeholder="Cole aqui a transcrição da reunião…",
-                    )
+            with st.expander(
+                "Anexos opcionais (transcrição e estimativa)",
+                icon=":material/attach_file:",
+            ):
+                st.caption(
+                    "Opcional. Use se tiver ata de reunião ou estimativa "
+                    "técnica além do brief."
+                )
+                transcription_file = st.file_uploader(
+                    "Anexar transcrição",
+                    type=["txt", "md", "vtt", "srt", "pdf"],
+                    key="transcription_uploader",
+                    help="O texto extraído preenche o campo abaixo.",
+                )
+                _apply_upload_to_field(
+                    uploaded=transcription_file,
+                    text_key="transcription_text",
+                    fingerprint_key="_transcription_file_id",
+                    label="Transcrição",
+                )
+                transcription = st.text_area(
+                    "Transcrição da reunião",
+                    height=160,
+                    key="transcription_text",
+                    placeholder="Cole aqui a transcrição da reunião…",
+                )
+                estimate_file = st.file_uploader(
+                    "Anexar estimativa (PDF)",
+                    type=["pdf"],
+                    key="estimate_uploader",
+                    help="O texto extraído do PDF preenche o campo abaixo.",
+                )
+                _apply_upload_to_field(
+                    uploaded=estimate_file,
+                    text_key="estimate_text",
+                    fingerprint_key="_estimate_file_id",
+                    label="Estimativa",
+                )
+                estimate = st.text_area(
+                    "Estimativa técnica",
+                    height=160,
+                    key="estimate_text",
+                    placeholder=(
+                        "Cole aqui a estimativa técnica ou anexe o PDF…"
+                    ),
+                )
 
-                with st.expander(
-                    "Estimativa técnica", icon=":material/diamond:"
-                ):
-                    st.caption(
-                        "Informe estimativas, prazos e recursos envolvidos "
-                        "ou anexe o PDF."
-                    )
-                    estimate_file = st.file_uploader(
-                        "Anexar estimativa (PDF)",
-                        type=["pdf"],
-                        key="estimate_uploader",
-                        help="O texto extraído do PDF preenche o campo abaixo.",
-                    )
-                    _apply_upload_to_field(
-                        uploaded=estimate_file,
-                        text_key="estimate_text",
-                        fingerprint_key="_estimate_file_id",
-                        label="Estimativa",
-                    )
-                    estimate = st.text_area(
-                        "Estimativa técnica",
-                        height=200,
-                        key="estimate_text",
-                        label_visibility="collapsed",
-                        placeholder=(
-                            "Cole aqui a estimativa técnica ou anexe o PDF…"
-                        ),
-                    )
-
-                with st.expander(
-                    "Complemento rápido (opcional)", icon=":material/bolt:"
-                ):
-                    st.caption("Qualquer observação adicional relevante.")
-                    follow = st.chat_input(
-                        "Escreva algo ou pressione Enter para adicionar"
-                    )
-                    if follow:
-                        st.session_state.messages.append(follow)
-                        st.rerun()
-                    for m in st.session_state.messages:
-                        st.markdown(f"- {m}")
-                    if st.session_state.messages and st.button(
-                        "Limpar complementos", key="clear_messages"
-                    ):
-                        st.session_state.messages = []
-                        st.rerun()
-
-    with right:
-        with st.container(border=True, key="card_result"):
-            _card_head(
-                "Resultado",
-                "Acompanhe o status da geração.",
-                icon_svg=ICON_RESULT,
+        if step == 2:
+            code_ok = _is_valid_project_code(project_code)
+            if project_code.strip() and not code_ok:
+                st.warning("Código inválido. Use o formato AAA999-99 (ex.: BUI001-26).")
+            _wizard_nav(
+                step=2,
+                can_advance=code_ok,
+                skip_info=_skips_info_step(selected_id),
             )
-            result_box = st.empty()
-            download_box = st.empty()
-            json_box = st.empty()
-            result_box.markdown(_result_empty_state(), unsafe_allow_html=True)
 
-    generate = st.button(
-        f"Gerar {label} PPTX" if mode == "package" else "Gerar proposta PPTX",
-        type="primary",
-        use_container_width=True,
-        icon=":material/description:",
-        key=f"generate_{selected_id}",
-    )
+    # —— Painel 3: Gerar + Resultado ——
+    with st.container(border=True, key="wizard_panel_3"):
+        _card_head(
+            "Gerar proposta",
+            "Revise e gere o PPTX oficial.",
+            step=3,
+        )
+        st.markdown(
+            f'<p class="checklist"><b>Tipo:</b> {label} · '
+            f"<b>Cliente:</b> {(client_name or '—').strip() or '—'} · "
+            f"<b>Código:</b> {(project_code or '—').strip() or '—'}</p>",
+            unsafe_allow_html=True,
+        )
+        if mode == "package":
+            if selected_id == "clarion":
+                st.markdown(
+                    '<p class="checklist"><b>Clarion:</b> deck estático — '
+                    "gere o PPTX sem preencher formulário.</p>",
+                    unsafe_allow_html=True,
+                )
+            else:
+                st.markdown(
+                    '<p class="checklist"><b>Antes de gerar:</b> cliente, código e '
+                    "campos obrigatórios da oferta preenchidos.</p>",
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.markdown(
+                '<p class="checklist"><b>Mínimo para Livre:</b> cliente + código + '
+                "brief (ou transcrição/estimativa).</p>",
+                unsafe_allow_html=True,
+            )
+
+        left, right = st.columns([1.2, 1], gap="medium")
+        with left:
+            generate = st.button(
+                f"Gerar {label}" if mode == "package" else "Gerar proposta Livre",
+                type="primary",
+                use_container_width=True,
+                icon=":material/rocket_launch:",
+                key="generate_pptx",
+            )
+        with right:
+            with st.container(border=True, key="card_result"):
+                _card_head(
+                    "Resultado",
+                    "Download quando a geração terminar.",
+                    icon_svg=ICON_RESULT,
+                )
+                result_box = st.empty()
+                download_box = st.empty()
+                last = st.session_state.get("last_result")
+                if last:
+                    result_box.markdown(
+                        _result_success_html(
+                            file_name=str(last.get("file_name") or ""),
+                            client=str(last.get("client") or ""),
+                            code=str(last.get("code") or ""),
+                            type_label=str(last.get("type_label") or ""),
+                            size_label=str(last.get("size_label") or ""),
+                        ),
+                        unsafe_allow_html=True,
+                    )
+                    path = Path(str(last.get("path") or ""))
+                    with download_box.container():
+                        if path.is_file():
+                            st.download_button(
+                                label="Baixar PPTX",
+                                data=path.read_bytes(),
+                                file_name=path.name,
+                                mime=(
+                                    "application/vnd.openxmlformats-officedocument"
+                                    ".presentationml.presentation"
+                                ),
+                                use_container_width=True,
+                                icon=":material/download:",
+                                key="download_result_persisted",
+                            )
+                        if st.button(
+                            "Ver detalhes da proposta",
+                            use_container_width=True,
+                            key="open_result_dialog_persisted",
+                            icon=":material/open_in_new:",
+                        ):
+                            st.session_state.open_result_modal = True
+                            st.rerun()
+                else:
+                    result_box.markdown(
+                        _result_empty_state(), unsafe_allow_html=True
+                    )
+
+        if step == 3:
+            _wizard_nav(
+                step=3,
+                can_advance=False,
+                skip_info=_skips_info_step(selected_id),
+            )
+
     _footer_note()
 
-    if not generate:
+    if step != 3 or not generate:
+        return
+
+    if selected_id == "clarion":
+        if not _is_valid_project_code(project_code):
+            project_code = "CLA000-00"
+    elif not _is_valid_project_code(project_code):
+        result_box.error(
+            "Código da proposta inválido. Use AAA999-99 (ex.: BUI001-26)."
+        )
         return
 
     if mode == "package":
@@ -1531,11 +2166,9 @@ def render_generator() -> None:
             master_path=master_path,
             client_name=client_name,
             project_code=project_code,
-            output_name=output_name,
             logo_file=logo_file,
             result_box=result_box,
             download_box=download_box,
-            json_box=json_box,
         )
         return
 
@@ -1543,17 +2176,16 @@ def render_generator() -> None:
         brief=brief,
         transcription=transcription,
         estimate=estimate,
+        premissas_text=premissas_text,
         provider=provider,
         api_key=api_key,
         model=model,
         base_url=base_url,
         client_name=client_name,
         project_code=project_code,
-        output_name=output_name,
         logo_file=logo_file,
         result_box=result_box,
         download_box=download_box,
-        json_box=json_box,
     )
 
 
@@ -1565,11 +2197,9 @@ def _run_package_generation(
     master_path: Path,
     client_name: str,
     project_code: str,
-    output_name: str,
     logo_file,
     result_box,
     download_box,
-    json_box,
 ) -> None:
     missing_req = [
         f.get("label") or f["id"]
@@ -1584,10 +2214,8 @@ def _run_package_generation(
 
     logo_path = _resolve_logo_path(logo_file, client_name)
     out_path = _build_output_path(
-        output_name=output_name,
         project_code=project_code,
-        client_name=client_name,
-        type_slug=slugify(pkg.get("id") or "pacote"),
+        type_id=str(pkg.get("id") or "pacote"),
     )
     loading = FullscreenLoading(title=f"Gerando {label}")
     loading.update(5, "Iniciando geração…")
@@ -1611,13 +2239,13 @@ def _run_package_generation(
     _show_download(
         result_box=result_box,
         download_box=download_box,
-        json_box=json_box,
         out_path=out_path,
         values=values,
         meta={
             "client": client_name,
             "code": project_code,
             "type": pkg.get("id"),
+            "type_label": label,
             "template": str(master_path),
             "section_slides": values.get("_section_slides", ""),
         },
@@ -1629,23 +2257,26 @@ def _run_livre_generation(
     brief: str,
     transcription: str,
     estimate: str,
+    premissas_text: str,
     provider: str,
     api_key: str,
     model: str,
     base_url: str | None,
     client_name: str,
     project_code: str,
-    output_name: str,
     logo_file,
     result_box,
     download_box,
-    json_box,
 ) -> None:
     if not api_key.strip():
-        result_box.error("Informe a API Key em Configuração LLM.")
+        result_box.error(
+            "API Key OpenAI não configurada. Defina OPENAI_API_KEY no arquivo .env."
+        )
         return
 
-    full_brief = _build_full_brief(brief, transcription, estimate)
+    full_brief = _build_full_brief(
+        brief, transcription, estimate, premissas=premissas_text
+    )
     if not full_brief.strip():
         result_box.error(
             "Preencha pelo menos um dos campos: "
@@ -1690,6 +2321,8 @@ def _run_livre_generation(
         return
 
     loading.update(72, "Textos recebidos. Montando PPTX…")
+    values = _apply_premissas_to_values(values, premissas_text)
+
     empty = [k for k, v in values.items() if not str(v).strip()]
     if empty:
         result_box.info(
@@ -1699,9 +2332,8 @@ def _run_livre_generation(
 
     logo_path = _resolve_logo_path(logo_file, client_name)
     out_path = _build_output_path(
-        output_name=output_name,
         project_code=project_code,
-        client_name=client_name,
+        type_id="livre",
     )
 
     loading.update(88, "Substituindo apenas {TOKENS} no mestre…")
@@ -1723,13 +2355,13 @@ def _run_livre_generation(
     _show_download(
         result_box=result_box,
         download_box=download_box,
-        json_box=json_box,
         out_path=out_path,
         values=values,
         meta={
             "client": client_name,
             "code": project_code,
             "type": "livre",
+            "type_label": "Livre",
             "template": str(master),
             "provider": provider,
             "model": model,
@@ -1944,24 +2576,18 @@ PAGES = {
 def main() -> None:
     st.set_page_config(
         page_title="Gerador de Propostas Mosten",
-        page_icon="📄",
+        page_icon=str(MOSTEN_LOGO) if MOSTEN_LOGO.is_file() else "📄",
         layout="wide",
-        initial_sidebar_state="expanded",
+        initial_sidebar_state="collapsed",
     )
     _init_session_defaults()
-    st.markdown(
-        build_theme_css(
-            st.session_state.get("theme_mode") or "Claro",
-            st.session_state.get("page", "gerador"),
-        ),
-        unsafe_allow_html=True,
-    )
+    st.session_state.theme_mode = "Claro"
+    st.markdown(build_theme_css("Claro"), unsafe_allow_html=True)
 
     if not gate_password():
         return
 
-    active_page = _sidebar()
-    PAGES.get(active_page, render_generator)()
+    render_generator()
 
 
 if __name__ == "__main__":

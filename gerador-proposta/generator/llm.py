@@ -250,9 +250,14 @@ def fill_slots_openai(
     project_code: str = "",
     client_name: str = "",
 ) -> dict[str, str]:
+    import os
+
     from openai import OpenAI
 
-    client = OpenAI(api_key=api_key, base_url=base_url or None)
+    client = OpenAI(
+        api_key=api_key or os.getenv("OPENAI_API_KEY"),
+        base_url=base_url or None,
+    )
     user = build_user_prompt(
         brief=brief,
         catalog=catalog,

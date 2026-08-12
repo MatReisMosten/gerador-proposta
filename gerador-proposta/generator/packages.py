@@ -138,12 +138,42 @@ def build_field_values(
     project_code: str = "",
 ) -> dict[str, str]:
     """Map package placeholder keys → concrete strings (only named {TOKENS})."""
+    fields = {k: (v or "").strip() for k, v in field_values.items()}
+    code = (
+        fields.get("codigo_projeto")
+        or fields.get("project_code")
+        or project_code.strip()
+        or "A definir"
+    )
+    client = (
+        fields.get("nome_cliente")
+        or fields.get("client_name")
+        or client_name.strip()
+        or "Cliente"
+    )
     context = {
-        "client_name": client_name.strip() or "Cliente",
-        "project_code": project_code.strip() or "PS-001",
+        "client_name": client,
+        "nome_cliente": client,
+        "project_code": code,
+        "codigo_projeto": code,
         "today": date.today().strftime("%d/%m/%Y"),
-        **{k: (v or "").strip() for k, v in field_values.items()},
+        **fields,
     }
+    # Keep shared aliases even when package fields override
+    context["client_name"] = client
+    context["nome_cliente"] = client
+    context["project_code"] = code
+    context["codigo_projeto"] = code
+
+    # {DESC_SEMANAS}: "8 semanas" a partir do número informado
+    tempo = (fields.get("tempo_execucao") or "").strip()
+    if tempo:
+        if "semana" in tempo.lower():
+            context["desc_semanas"] = tempo
+        else:
+            context["desc_semanas"] = f"{tempo} semanas"
+    else:
+        context.setdefault("desc_semanas", "")
 
     mapping = pkg.get("placeholders") or {}
     result: dict[str, str] = {}
@@ -152,7 +182,7 @@ def build_field_values(
         if not token or token == "{}":
             continue
         # never overwrite logo markers — handled by replace_logo_cliente
-        if token.upper() in {"{LOGO_CLIENTE}", "{LOGO_CLIENTE}"} or token in P.KEEP_AS_IS:
+        if token in P.KEEP_AS_IS or token.strip("{}").upper() == "LOGO_CLIENTE":
             continue
         result[token] = str(context.get(source_key, "") or "")
     return result
@@ -268,7 +298,19 @@ def build_package_deck(
     )
     apply_named_placeholders(output_path, values)
 
-    # Optional investment table fill (empty cells only)
+    # Clear leftover named tokens in the isolated deck so braces never ship
+    from .engine import is_fillable_named_token, scan_named_tokens
+
+    leftovers = {
+        token: ""
+        for token in scan_named_tokens(output_path)
+        if token not in values and is_fillable_named_token(token)
+    }
+    if leftovers:
+        apply_named_placeholders(output_path, leftovers)
+        values.update(leftovers)
+
+    # Optional investment table fill — total (e legado qtd/hora se ainda vierem)
     qtd = (field_values.get("quantidade") or field_values.get("pessoas") or "").strip()
     valor = (field_values.get("valor_hora") or field_values.get("valor") or "").strip()
     perfil = (field_values.get("perfil") or "").strip()
@@ -282,13 +324,14 @@ def build_package_deck(
             total = ""
 
     progress(85, "Atualizando tabela de investimento…")
-    fill_investment_table(
-        output_path,
-        perfil=perfil,
-        quantidade=qtd,
-        valor_hora=valor,
-        total=total,
-    )
+    if total or perfil or qtd or valor:
+        fill_investment_table(
+            output_path,
+            perfil=perfil,
+            quantidade=qtd,
+            valor_hora=valor,
+            total=total,
+        )
 
     if logo_path:
         progress(92, "Aplicando logo do cliente…")

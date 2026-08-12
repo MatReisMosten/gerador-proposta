@@ -5,38 +5,24 @@
       "id": "professional_service",
       "label": "Professional Service",
       "mode": "package",
-      "description": "Gera só a seção Professional Service do slide mestre. Textos fixos permanecem; só {placeholders} e a tabela de investimento são preenchidos.",
+      "description": "Professional Service: campos e tabela de investimento.",
       "source": "master",
       "template": "slide-mestre-template.pptx",
       "section": "Professional Service",
       "slides_1based": null,
       "fields": [
         {
-          "id": "perfil",
-          "label": "Perfil / papel",
-          "placeholder": "Desenvolvedor Full-Stack Sênior",
-          "required": false,
-          "type": "text"
-        },
-        {
-          "id": "quantidade",
-          "label": "Quantidade",
-          "placeholder": "160",
-          "required": true,
-          "type": "text"
-        },
-        {
-          "id": "valor_hora",
-          "label": "Valor hora",
-          "placeholder": "R$ 180,00",
-          "required": true,
-          "type": "text"
-        },
-        {
           "id": "total",
-          "label": "Total (opcional — calcula se vazio)",
+          "label": "Total (valor)",
           "placeholder": "R$ 28.800,00",
-          "required": false,
+          "required": true,
+          "type": "text"
+        },
+        {
+          "id": "tempo_execucao",
+          "label": "Tempo de execução (semanas)",
+          "placeholder": "8",
+          "required": true,
           "type": "text"
         }
       ],
@@ -44,14 +30,134 @@
         "{COD_CLIENTE}": "project_code",
         "{DATA_ATUAL}": "today",
         "{NOME_CLIENTE}": "client_name",
-        "{Nome_cliente}": "client_name"
+        "{Nome_cliente}": "client_name",
+        "{VALOR}": "total",
+        "{SEMANAS}": "tempo_execucao",
+        "{DESC_SEMANAS}": "desc_semanas"
       }
+    },
+    {
+      "id": "suporte",
+      "label": "Suporte",
+      "mode": "package",
+      "description": "Suporte: valor mensal e tempo de contrato.",
+      "source": "master",
+      "template": "slide-mestre-template.pptx",
+      "section": "SUPORTE",
+      "slides_1based": null,
+      "fields": [
+        {
+          "id": "valor_suporte",
+          "label": "Valor do suporte (mensal)",
+          "placeholder": "8.500,00",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "id": "tempo_contrato",
+          "label": "Tempo de contrato",
+          "placeholder": "12 meses",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "placeholders": {
+        "{COD_PROJETO}": "project_code",
+        "{NOME_CLIENTE}": "client_name",
+        "{Nome_cliente}": "client_name",
+        "{VALOR}": "valor_suporte",
+        "{TEMPO_CONTRATO}": "tempo_contrato",
+        "{DATA}": "today",
+        "{DATA_ATUAL}": "today"
+      }
+    },
+    {
+      "id": "passlog",
+      "label": "Controle de Acesso (PassLog)",
+      "mode": "package",
+      "description": "PassLog: cliente, código, logo, preço, dor e brief.",
+      "source": "master",
+      "template": "slide-mestre-template.pptx",
+      "section": "CONTROLE DE ACESSO (PASSLOG)",
+      "slides_1based": null,
+      "fields": [
+        {
+          "id": "total",
+          "label": "Preço",
+          "placeholder": "R$ 28.800,00",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "id": "dor_cliente",
+          "label": "Dor do cliente",
+          "placeholder": "Descreva a dor ou desafio operacional do cliente…",
+          "required": true,
+          "type": "textarea"
+        }
+      ],
+      "placeholders": {
+        "{COD_PROJETO}": "project_code",
+        "{DATA}": "today",
+        "{NOME_CLIENTE}": "client_name",
+        "{Nome_cliente}": "client_name",
+        "{VALOR}": "total",
+        "{DESAFIO_1_CLIENTE}": "dor_cliente",
+        "{DESAFIO_2_CLIENTE}": "brief"
+      }
+    },
+    {
+      "id": "discovery",
+      "label": "Discovery",
+      "mode": "package",
+      "description": "Discovery: cliente, código, logo, preço, dor e brief.",
+      "source": "master",
+      "template": "slide-mestre-template.pptx",
+      "section": "DISCOVERY",
+      "slides_1based": null,
+      "fields": [
+        {
+          "id": "total",
+          "label": "Preço",
+          "placeholder": "R$ 28.800,00",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "id": "dor_cliente",
+          "label": "Dor do cliente",
+          "placeholder": "Descreva a dor ou desafio operacional do cliente…",
+          "required": true,
+          "type": "textarea"
+        }
+      ],
+      "placeholders": {
+        "{COD_PROJETO}": "project_code",
+        "{DATA}": "today",
+        "{NOME_CLIENTE}": "client_name",
+        "{Nome_cliente}": "client_name",
+        "{VALOR}": "total",
+        "{DESCRICAO_1_DOR}": "dor_cliente",
+        "{DESCRICAO_2_DOR}": "brief"
+      }
+    },
+    {
+      "id": "clarion",
+      "label": "Clarion",
+      "mode": "package",
+      "description": "Deck Clarion estático — vai direto para gerar.",
+      "source": "master",
+      "template": "slide-mestre-template.pptx",
+      "section": "CLARION",
+      "slides_1based": null,
+      "fields": [],
+      "placeholders": {}
     },
     {
       "id": "livre",
       "label": "Livre",
       "mode": "llm_full",
-      "description": "Proposta narrativa completa a partir de brief, transcrição e estimativa."
+      "description": "Proposta completa com LLM a partir do brief."
     }
   ]
 }
