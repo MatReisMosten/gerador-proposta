@@ -1,0 +1,11 @@
+{
+  "client": "",
+  "code": "CLA000-00",
+  "type": "clarion",
+  "template": "/Users/matheusreis/Documents/hns-mvp/gerador-proposta/gerador-proposta/data/slide-mestre-template.pptx",
+  "provider": null,
+  "model": null,
+  "values": {
+    "_section_slides": "102,103,104,105,106,107,108,109,110,111"
+  }
+}
