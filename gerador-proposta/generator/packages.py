@@ -165,15 +165,11 @@ def build_field_values(
     context["project_code"] = code
     context["codigo_projeto"] = code
 
-    # {DESC_SEMANAS}: "8 semanas" a partir do número informado
+    # {meses}: só o número (o template já traz "… {meses} meses")
     tempo = (fields.get("tempo_execucao") or "").strip()
     if tempo:
-        if "semana" in tempo.lower():
-            context["desc_semanas"] = tempo
-        else:
-            context["desc_semanas"] = f"{tempo} semanas"
-    else:
-        context.setdefault("desc_semanas", "")
+        digits = re.sub(r"\D", "", tempo)
+        context["tempo_execucao"] = str(int(digits)) if digits else tempo
 
     mapping = pkg.get("placeholders") or {}
     result: dict[str, str] = {}

@@ -1054,7 +1054,6 @@ def _init_session_defaults() -> None:
         "brief_text": "",
         "transcription_text": "",
         "estimate_text": "",
-        "premissas_restricoes": "",
         "theme_mode": "Claro",
         "page": "gerador",
         "wizard_step": 1,
@@ -1066,7 +1065,6 @@ def _init_session_defaults() -> None:
         "_transcription_file_id": None,
         "_estimate_file_id": None,
         "_brief_file_id": None,
-        "_premissas_file_id": None,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -1176,7 +1174,6 @@ def _build_full_brief(
     brief: str,
     transcription: str,
     estimate: str,
-    premissas: str = "",
 ) -> str:
     parts: list[str] = []
     if brief.strip():
@@ -1185,8 +1182,6 @@ def _build_full_brief(
         parts.append(f"TRANSCRIÇÃO DA REUNIÃO:\n{transcription.strip()}")
     if estimate.strip():
         parts.append(f"ESTIMATIVA TÉCNICA:\n{estimate.strip()}")
-    if premissas.strip():
-        parts.append(f"PREMISSAS E RESTRIÇÕES:\n{premissas.strip()}")
     if st.session_state.messages:
         parts.append(
             "Complementos:\n"
@@ -1425,8 +1420,8 @@ def _format_money_br(raw: str) -> str:
     return f"R$ {reais_fmt},{cents:02d}"
 
 
-def _format_weeks_only(raw: str) -> str:
-    """Só dígitos — tempo em semanas."""
+def _format_months_only(raw: str) -> str:
+    """Só dígitos — tempo em meses."""
     digits = re.sub(r"\D", "", raw or "")[:3]
     if not digits:
         return ""
@@ -1437,8 +1432,8 @@ def _on_money_field_change(key: str) -> None:
     st.session_state[key] = _format_money_br(st.session_state.get(key) or "")
 
 
-def _on_weeks_field_change(key: str) -> None:
-    st.session_state[key] = _format_weeks_only(st.session_state.get(key) or "")
+def _on_months_field_change(key: str) -> None:
+    st.session_state[key] = _format_months_only(st.session_state.get(key) or "")
 
 
 def _is_valid_project_code(code: str) -> bool:
@@ -1594,102 +1589,6 @@ def _proposal_ready_dialog() -> None:
         st.caption(f"Template: `{Path(str(data['template'])).name}`")
 
 
-def _parse_premissas_restricoes(text: str) -> dict[str, str]:
-    """
-    Converte texto livre em tokens {PREMISSA_n_ITEM}, {RESTRICAO_n_ITEM},
-    {RESTR_n_DESC}. Aceita blocos 'Premissas:' / 'Restrições:' ou lista única.
-    """
-    raw = (text or "").strip()
-    if not raw:
-        return {}
-
-    lower = raw.lower()
-    prem_idx = -1
-    rest_idx = -1
-    for marker in ("premissas:", "premissa:", "premissas\n", "premissa\n"):
-        i = lower.find(marker)
-        if i >= 0:
-            prem_idx = i
-            break
-    for marker in (
-        "restrições:",
-        "restricoes:",
-        "restrição:",
-        "restricao:",
-        "restrições\n",
-        "restricoes\n",
-    ):
-        i = lower.find(marker)
-        if i >= 0:
-            rest_idx = i
-            break
-
-    def _items(block: str) -> list[str]:
-        lines: list[str] = []
-        headers = {
-            "premissas",
-            "premissa",
-            "restrições",
-            "restricoes",
-            "restrição",
-            "restricao",
-        }
-        for line in block.splitlines():
-            cleaned = re.sub(r"^[\s\-•*–—\d.)]+", "", line).strip()
-            if not cleaned:
-                continue
-            if cleaned.lower().rstrip(":").strip() in headers:
-                continue
-            lines.append(cleaned)
-        if not lines and block.strip():
-            parts = re.split(r"[;\n]+", block)
-            lines = [
-                p.strip()
-                for p in parts
-                if p.strip() and p.strip().lower().rstrip(":").strip() not in headers
-            ]
-        return lines
-
-    if prem_idx >= 0 or rest_idx >= 0:
-        if prem_idx >= 0 and rest_idx >= 0:
-            if prem_idx < rest_idx:
-                prem_block = raw[prem_idx:rest_idx]
-                rest_block = raw[rest_idx:]
-            else:
-                rest_block = raw[rest_idx:prem_idx]
-                prem_block = raw[prem_idx:]
-        elif prem_idx >= 0:
-            prem_block = raw[prem_idx:]
-            rest_block = ""
-        else:
-            prem_block = ""
-            rest_block = raw[rest_idx:]
-        premissas = _items(prem_block)
-        restricoes = _items(rest_block)
-    else:
-        premissas = _items(raw)
-        restricoes = []
-
-    out: dict[str, str] = {}
-    for i, item in enumerate(premissas[:7], start=1):
-        out[f"{{PREMISSA_{i}_ITEM}}"] = item
-    for i, item in enumerate(restricoes[:5], start=1):
-        out[f"{{RESTRICAO_{i}_ITEM}}"] = item
-        out[f"{{RESTR_{i}_DESC}}"] = item
-    return out
-
-
-def _apply_premissas_to_values(
-    values: dict[str, str], premissas_text: str
-) -> dict[str, str]:
-    parsed = _parse_premissas_restricoes(premissas_text)
-    if not parsed:
-        return values
-    merged = dict(values)
-    merged.update(parsed)
-    return merged
-
-
 def _human_size(num_bytes: int) -> str:
     size = float(num_bytes)
     for unit in ("B", "KB", "MB", "GB"):
@@ -1783,7 +1682,6 @@ def render_generator() -> None:
     client_name = st.session_state.get("info_client") or ""
     project_code = st.session_state.get("info_code") or ""
     logo_file = None
-    premissas_text = st.session_state.get("premissas_restricoes") or ""
 
     # —— Painel 1: Tipo ——
     with st.container(border=True, key="wizard_panel_1"):
@@ -1901,38 +1799,6 @@ def render_generator() -> None:
                 "Envie um PNG ou JPG para visualizar o logo do cliente."
             )
 
-        premissas_file = st.file_uploader(
-            "Anexar premissas e restrições (MD/TXT)",
-            type=["txt", "md"],
-            key="premissas_uploader",
-            help="O texto do arquivo preenche o campo abaixo para revisão.",
-        )
-        _apply_upload_to_field(
-            uploaded=premissas_file,
-            text_key="premissas_restricoes",
-            fingerprint_key="_premissas_file_id",
-            label="Premissas e restrições",
-        )
-        if premissas_file is not None:
-            st.caption(f"Anexo: **{premissas_file.name}** — revise o texto abaixo.")
-        premissas_text = st.text_area(
-            "Premissas e restrições",
-            height=120,
-            key="premissas_restricoes",
-            placeholder=(
-                "Premissas:\n"
-                "- Acesso aos sistemas legado disponível\n"
-                "- Stakeholders alinhados no kick-off\n"
-                "Restrições:\n"
-                "- Sem integração em tempo real\n"
-                "- Infraestrutura cloud sob responsabilidade do cliente"
-            ),
-            help=(
-                "Itens explícitos do projeto. Use blocos Premissas: e "
-                "Restrições: (um item por linha). Ou anexe um .md/.txt."
-            ),
-        )
-
         if mode == "package":
             pkg_fields = pkg.get("fields") or []
             if pkg_fields:
@@ -1975,8 +1841,8 @@ def render_generator() -> None:
                                     field_values[fid] = st.text_input(
                                         label_f,
                                         key=key,
-                                        placeholder=ph or "8",
-                                        on_change=_on_weeks_field_change,
+                                        placeholder=ph or "3",
+                                        on_change=_on_months_field_change,
                                         args=(key,),
                                     )
                                 else:
@@ -2176,7 +2042,6 @@ def render_generator() -> None:
         brief=brief,
         transcription=transcription,
         estimate=estimate,
-        premissas_text=premissas_text,
         provider=provider,
         api_key=api_key,
         model=model,
@@ -2257,7 +2122,6 @@ def _run_livre_generation(
     brief: str,
     transcription: str,
     estimate: str,
-    premissas_text: str,
     provider: str,
     api_key: str,
     model: str,
@@ -2274,9 +2138,7 @@ def _run_livre_generation(
         )
         return
 
-    full_brief = _build_full_brief(
-        brief, transcription, estimate, premissas=premissas_text
-    )
+    full_brief = _build_full_brief(brief, transcription, estimate)
     if not full_brief.strip():
         result_box.error(
             "Preencha pelo menos um dos campos: "
@@ -2321,7 +2183,6 @@ def _run_livre_generation(
         return
 
     loading.update(72, "Textos recebidos. Montando PPTX…")
-    values = _apply_premissas_to_values(values, premissas_text)
 
     empty = [k for k, v in values.items() if not str(v).strip()]
     if empty:

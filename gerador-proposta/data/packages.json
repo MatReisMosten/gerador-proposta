@@ -20,8 +20,8 @@
         },
         {
           "id": "tempo_execucao",
-          "label": "Tempo de execução (semanas)",
-          "placeholder": "8",
+          "label": "Tempo de execução (meses)",
+          "placeholder": "3",
           "required": true,
           "type": "text"
         }
@@ -32,8 +32,8 @@
         "{NOME_CLIENTE}": "client_name",
         "{Nome_cliente}": "client_name",
         "{VALOR}": "total",
-        "{SEMANAS}": "tempo_execucao",
-        "{DESC_SEMANAS}": "desc_semanas"
+        "{Valor}": "total",
+        "{meses}": "tempo_execucao"
       }
     },
     {
