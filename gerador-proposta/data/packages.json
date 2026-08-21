@@ -24,6 +24,21 @@
           "placeholder": "3",
           "required": true,
           "type": "text"
+        },
+        {
+          "id": "tipo_profissional",
+          "label": "Tipo de profissional",
+          "placeholder": "Desenvolvedor QA",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "id": "senioridade",
+          "label": "Senioridade",
+          "placeholder": "Sênior",
+          "required": true,
+          "type": "select",
+          "options": ["Junior", "Pleno", "Sênior", "Especialista"]
         }
       ],
       "placeholders": {
@@ -33,7 +48,8 @@
         "{Nome_cliente}": "client_name",
         "{VALOR}": "total",
         "{Valor}": "total",
-        "{meses}": "tempo_execucao"
+        "{meses}": "tempo_execucao",
+        "{PERFIL_PROFISSIONAL}": "perfil_profissional"
       }
     },
     {
@@ -152,6 +168,24 @@
       "slides_1based": null,
       "fields": [],
       "placeholders": {}
+    },
+    {
+      "id": "escopo_fechado",
+      "label": "Escopo Fechado (DP World)",
+      "mode": "llm_package",
+      "description": "Escopo Fechado DP World: código da proposta e insumos. Sem nome nem logo do cliente.",
+      "source": "master",
+      "template": "slide-mestre-template.pptx",
+      "section": "Escopo Fechado (DP World)",
+      "slides_1based": null,
+      "hide_client": true,
+      "hide_logo": true,
+      "uses_insumos": true,
+      "fields": [],
+      "placeholders": {
+        "{COD_PROJETO}": "project_code",
+        "{DATA}": "today"
+      }
     },
     {
       "id": "livre",

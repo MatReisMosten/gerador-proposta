@@ -351,6 +351,22 @@ def load_named_token_catalog(pptx_path: Path | None = None) -> dict[str, dict]:
     return catalog
 
 
+def filter_catalog_by_section(
+    catalog: dict[str, dict],
+    section_name: str,
+) -> dict[str, dict]:
+    """Keep only tokens that appear in the given PowerPoint section."""
+    wanted = (section_name or "").strip()
+    if not wanted:
+        return dict(catalog)
+    filtered: dict[str, dict] = {}
+    for key, info in catalog.items():
+        sections = info.get("sections") or []
+        if wanted in sections or (info.get("section") or "") == wanted:
+            filtered[key] = info
+    return filtered
+
+
 def _guess_token_role(token: str, section: str) -> str:
     """
     Classify named tokens for writing density.
@@ -372,7 +388,12 @@ def _guess_token_role(token: str, section: str) -> str:
         "NOME_CLIENTE",
         "VALOR",
         "TEMPO_CONTRATO",
-    }:
+        "TEMPO",
+        "TOTAL",
+        "VALOR_ENTREGA",
+        "VALOR_KICK",
+        "MESES",
+    } or name.startswith("VALOR_"):
         return "meta"
     if name.startswith("STEP_") or name == "SEMANAS":
         return "step"
@@ -409,10 +430,16 @@ def _guess_token_role(token: str, section: str) -> str:
         or name.startswith("RESTR_")
         or name.startswith("REST_")
         or name.startswith("PREMISSA_")
+        or name.startswith("RESTRICAO_")
         or (name.startswith("ITEM_") and name.endswith("_DESC"))
         or (name.startswith("ITEM_") and name.endswith("_OPORTUNIDADE"))
     ):
         return "card_desc"
+
+    if name.endswith("_CARD"):
+        return "label"
+    if name.endswith("_ITEM"):
+        return "bullet"
 
     if name.startswith("ITEM_"):
         return "label"
@@ -422,6 +449,7 @@ def _guess_token_role(token: str, section: str) -> str:
         name.endswith("_DESC")
         or name.startswith("DESC_")
         or "DESCRICAO" in name
+        or "DECRICAO" in name
         or name.startswith("RESULT_")
         or name.startswith("ENTREGA_")
         or name.startswith("DESC_SUB_")
@@ -454,14 +482,15 @@ _LIVRE_EXCLUDED_SECTIONS = (
     "CONTROLE DE ACESSO (PASSLOG)",
     "DISCOVERY",
     "CLARION",
+    "Escopo Fechado (DP World)",
 )
 
 
 def livre_slide_indices(pptx_path: Path | None = None) -> list[int]:
     """
     1-based slides for Livre mode: all sections except package-only ones
-    (Professional Service, SUPORTE, PassLog, Discovery, Clarion).
-    If sections missing, keep the whole deck.
+    (Professional Service, SUPORTE, PassLog, Discovery, Clarion,
+    Escopo Fechado). If sections missing, keep the whole deck.
     """
     from .packages import read_pptx_sections
 
@@ -489,8 +518,9 @@ def build_livre_deck(
 ) -> Path:
     """
     Copy slide-mestre, optionally drop package-only sections
-    (Professional Service, SUPORTE, PassLog, Discovery, Clarion),
-    replace ONLY named {TOKENS}, apply logo. Raw text stays untouched.
+    (Professional Service, SUPORTE, PassLog, Discovery, Clarion,
+    Escopo Fechado), replace ONLY named {TOKENS}, apply logo.
+    Raw text stays untouched.
     """
     src = P.master_template_path()
     output_path = Path(output_path)
@@ -526,10 +556,16 @@ def build_livre_deck(
     return output_path
 
 
-def apply_named_placeholders(pptx_path: Path, values: dict[str, str]) -> int:
+def apply_named_placeholders(
+    pptx_path: Path,
+    values: dict[str, str],
+    *,
+    force: bool = False,
+) -> int:
     """
     Replace named placeholders like {COD_CLIENTE} in text frames and tables.
     Skips empty {} and never invents content for non-placeholder text.
+    force=True also replaces logo markers (used to clear them when unused).
     """
     if not values:
         return 0
@@ -537,15 +573,14 @@ def apply_named_placeholders(pptx_path: Path, values: dict[str, str]) -> int:
     clean: dict[str, str] = {}
     for k, v in values.items():
         key = _normalize_token_key(k)
-        if (
-            not key
-            or key in _EMPTY_TOKENS
-            or key in P.KEEP_AS_IS
-            or key.startswith("_")
-        ):
+        if not key or key in _EMPTY_TOKENS or key.startswith("_"):
             continue
         inner = key[1:-1]
-        if inner in _LOGO_TOKEN_NAMES or _SLOT_JUNK_RE.match(inner):
+        if not force and (
+            key in P.KEEP_AS_IS or inner in _LOGO_TOKEN_NAMES
+        ):
+            continue
+        if _SLOT_JUNK_RE.match(inner):
             continue
         clean[key] = "" if v is None else str(v)
 

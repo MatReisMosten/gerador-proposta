@@ -16,15 +16,15 @@ Gerar propostas comerciais Mosten em PowerPoint a partir de um slide mestre ofic
 
 ## Positioning
 
-Modo Livre com LLM preenche apenas tokens `{NOME}` do mestre — a narrativa comercial nasce do brief/contexto, sem redesenhar a estrutura visual dos slides. Pacotes (Professional Service, Suporte, PassLog, Discovery, Clarion) geram seções fixas do mestre com campos variáveis.
+Modo Livre com LLM preenche apenas tokens `{NOME}` do mestre — a narrativa comercial nasce do brief/contexto, sem redesenhar a estrutura visual dos slides. Pacotes (Professional Service, Suporte, PassLog, Discovery, Clarion) geram seções fixas do mestre com campos variáveis. Escopo Fechado (DP World) isola a seção do mestre e preenche os textos via LLM a partir dos insumos — só `{COD_PROJETO}`, sem nome nem logo do cliente.
 
 ## Operating Context
 
 - App Streamlit (`streamlit run app.py`)
-- Tipos de proposta registrados em `data/packages.json`: Professional Service, Suporte, Controle de Acesso (PassLog), Discovery, Clarion, Livre
+- Tipos de proposta registrados em `data/packages.json`: Professional Service, Suporte, Controle de Acesso (PassLog), Discovery, Clarion, Escopo Fechado (DP World), Livre
 - Template canônico: `data/slide-mestre-template.pptx`
 - Saída em `data/geradas/`
-- Chave de LLM só na sessão; senha opcional via `APP_PASSWORD` em deploy público
+- Provider/modelo de LLM fixos no código (OpenAI, `gpt-4.1-mini`); chave via `OPENAI_API_KEY` no `.env` do servidor — não há campo de chave por sessão de usuário. Senha opcional de acesso via `APP_PASSWORD` em deploy público.
 
 ## Capabilities and Constraints
 

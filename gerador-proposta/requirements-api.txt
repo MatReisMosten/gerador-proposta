@@ -1,0 +1,15 @@
+# Dependências da API (api/) + generator/ — deliberadamente SEM streamlit.
+# requirements.txt tem streamlit (e o que ele arrasta: pandas, pyarrow,
+# altair, pydeck) porque é a base do app Fase 1. A imagem Docker da API
+# (Dockerfile.react) não deve carregar esse peso à toa — ver
+# docs/plano-migracao-react.md.
+python-pptx>=1.0.0
+Pillow>=10.0.0
+lxml>=4.9.0
+openai>=1.40.0
+anthropic>=0.34.0
+pypdf>=4.0.0
+python-dotenv>=1.0.0
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9

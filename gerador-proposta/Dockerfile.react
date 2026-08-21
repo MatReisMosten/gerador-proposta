@@ -1,0 +1,35 @@
+# Gerador de Propostas Mosten — Fase 2 (FastAPI + React), um serviço só.
+# Ver docs/plano-migracao-react.md. O Dockerfile original (Streamlit) segue
+# intacto em ./Dockerfile — este é uma alternativa, não substitui aquele.
+
+FROM node:20-slim AS frontend-build
+WORKDIR /frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+# vite.config.ts manda o build para ../frontend_dist (fora de /frontend)
+RUN npm run build
+
+FROM python:3.11-slim AS runtime
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PORT=8000 \
+    PROPOSAL_DATA_DIR=/app/data
+
+COPY requirements.txt requirements-api.txt ./
+RUN pip install --no-cache-dir -r requirements-api.txt
+
+COPY api/ ./api/
+COPY generator/ ./generator/
+COPY proposal_library/ ./proposal_library/
+COPY data/ ./data/
+COPY --from=frontend-build /frontend_dist ./frontend_dist
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')" || exit 1
+
+CMD uvicorn api.main:app --host 0.0.0.0 --port ${PORT}

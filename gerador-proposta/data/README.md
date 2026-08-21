@@ -2,7 +2,7 @@
 
 Contém:
 
-- `slide-mestre-template.pptx` — template master com seções (CAPA, DOR, OPORTUNIDADE, SOLUÇÃO, …, Professional Service, SUPORTE, CONTROLE DE ACESSO (PASSLOG), DISCOVERY, CLARION)
+- `slide-mestre-template.pptx` — template master com seções (CAPA, DOR, OPORTUNIDADE, SOLUÇÃO, …, Professional Service, SUPORTE, CONTROLE DE ACESSO (PASSLOG), DISCOVERY, CLARION, Escopo Fechado (DP World))
 - `Modelo-Proposta-Tecnica-v1.0-variaveis.pptx` + `*-slots.json` (legado; não usado pelo modo Livre atual)
 - `packages.json` — registry de tipos de proposta
 - `packages/*.pptx` — templates standalone opcionais
@@ -16,7 +16,7 @@ Usa o **slide mestre**. A geração:
 
 1. Escaneia tokens nomeados `{TOKEN}` no PPTX (texto cru é ignorado)
 2. LLM preenche só essas chaves
-3. Copia o mestre, remove as seções de pacote (Professional Service, SUPORTE, PassLog, Discovery, Clarion)
+3. Copia o mestre, remove as seções de pacote (Professional Service, SUPORTE, PassLog, Discovery, Clarion, Escopo Fechado)
 4. Substitui apenas `{TOKEN}`; rótulos/footers fixos permanecem
 5. Aplica logo do cliente quando houver `{LOGO_CLIENTE}`
 
@@ -68,3 +68,13 @@ Usa a seção **CLARION** do slide mestre. A geração:
 1. Copia o master
 2. Mantém só os slides dessa seção (deck de produto estático)
 3. Sem formulário de informações — o wizard pula direto do tipo para gerar
+
+## Escopo Fechado (DP World)
+
+Usa a seção **Escopo Fechado (DP World)** do slide mestre. A geração:
+
+1. Copia o master
+2. Mantém só os slides dessa seção (proposta isolada)
+3. Substitui `{COD_PROJETO}` e `{DATA}`; o LLM preenche os demais tokens a partir dos insumos
+4. Sem nome do cliente e sem logo — `{LOGO_CLIENTE}` é limpo
+5. Campos na UI: código da proposta e insumos (PDF/MD/TXT ou texto colado)

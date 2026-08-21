@@ -1,0 +1,19 @@
+{
+  "client": "PENSKY",
+  "code": "PEN001-26",
+  "type": "professional_service",
+  "template": "/Users/matheusreis/Documents/hns-mvp/gerador-proposta/gerador-proposta/data/slide-mestre-template.pptx",
+  "provider": null,
+  "model": null,
+  "values": {
+    "{COD_CLIENTE}": "PEN001-26",
+    "{DATA_ATUAL}": "13/08/2026",
+    "{NOME_CLIENTE}": "PENSKY",
+    "{Nome_cliente}": "PENSKY",
+    "{VALOR}": "R$ 1.000,00",
+    "{Valor}": "R$ 1.000,00",
+    "{meses}": "4",
+    "{PERFIL_PROFISSIONAL}": "Desenvolvedor Backend Pleno",
+    "_section_slides": "28,29,30,31,32,33,34,35,36,37,38,39,40"
+  }
+}
