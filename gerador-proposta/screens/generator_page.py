@@ -186,8 +186,9 @@ def render_generator() -> None:
 
     provider = FIXED_LLM_PROVIDER
     model = FIXED_LLM_MODEL
-    api_key = OPENAI_API_KEY
     base_url = FIXED_LLM_BASE_URL
+    if "ui_openai_api_key" not in st.session_state:
+        st.session_state.ui_openai_api_key = OPENAI_API_KEY
 
     field_values: dict[str, str] = {}
     brief = transcription = estimate = ""
@@ -249,12 +250,24 @@ def render_generator() -> None:
             "</div>",
             unsafe_allow_html=True,
         )
+        st.text_input(
+            "API Key OpenAI",
+            type="password",
+            key="ui_openai_api_key",
+            placeholder="sk-...",
+            help=(
+                "Necessária para tipos que usam LLM. "
+                "Se OPENAI_API_KEY estiver no .env, o campo já vem preenchido."
+            ),
+        )
         if step == 1:
             _wizard_nav(
                 step=1,
                 can_advance=True,
                 skip_info=_skips_info_step(selected_id),
             )
+
+    api_key = (st.session_state.get("ui_openai_api_key") or "").strip()
 
     selected_id = st.session_state.selected_proposal_type
     if selected_id not in pkg_by_id:

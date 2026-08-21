@@ -285,7 +285,8 @@ def _run_livre_generation(
 ) -> None:
     if not api_key.strip():
         result_box.error(
-            "API Key OpenAI não configurada. Defina OPENAI_API_KEY no arquivo .env."
+            "API Key OpenAI não configurada. Informe a chave na etapa "
+            "Tipo de proposta ou defina OPENAI_API_KEY no arquivo .env."
         )
         return
 
